@@ -1,0 +1,11 @@
+{
+  "bank": "Rabobank",
+  "accepted_permits": [],
+  "required_documents": {
+    "always": [],
+    "employment": [],
+    "conditional": {}
+  },
+  "online_application": false,
+  "notes": "PLACEHOLDER — fill with real data from rabobank.nl"
+}
