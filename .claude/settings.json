@@ -1,5 +1,5 @@
 {
-  "$schema": "https://claude.com/schemas/settings.json",
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Bash(npm run:*)",
@@ -27,10 +27,40 @@
     ],
     "deny": [
       "Bash(rm -rf /:*)",
+      "Bash(rm -rf /*)",
       "Bash(rm -rf ~:*)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf $HOME:*)",
+      "Bash(sudo:*)",
+      "Bash(chmod -R 777:*)",
+      "Bash(chown -R:*)",
+      "Bash(mkfs:*)",
+      "Bash(dd if=:*)",
       "Bash(:(){ :|:& };:)",
-      "Bash(curl:* | sh)",
-      "Bash(curl:* | bash)"
+      "Bash(curl * | sh)",
+      "Bash(curl * | bash)",
+      "Bash(wget * | sh)",
+      "Bash(wget * | bash)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease origin main:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fdx:*)",
+      "Bash(npm publish:*)",
+      "Bash(aws s3 rm:*)",
+      "Bash(aws s3api delete:*)",
+      "Bash(aws iam:*)",
+      "Bash(vercel remove:*)",
+      "Bash(vercel env rm:*)",
+      "Read(.env)",
+      "Read(.env.local)",
+      "Read(.env.*.local)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Read(**/.aws/credentials)",
+      "Read(**/.ssh/**)"
     ]
   },
   "hooks": {
@@ -39,7 +69,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -lc 'test -f .env.local || echo \"[warn] .env.local missing — copy .env.example and fill keys\"; test -n \"$ANTHROPIC_API_KEY\" || echo \"[warn] ANTHROPIC_API_KEY not set\"'"
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh\""
           }
         ]
       }
@@ -50,7 +80,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -lc 'for f in $CLAUDE_FILE_PATHS; do case \"$f\" in *.ts|*.tsx|*.js|*.jsx|*.json|*.md|*.css|*.yml|*.yaml) npx --no-install prettier --write \"$f\" >/dev/null 2>&1 || true ;; esac; done'"
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/format-on-save.sh\""
           }
         ]
       }
@@ -60,7 +90,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -lc 'echo \"[claude] session stopped at $(date -u +%FT%TZ)\" >> .claude/session.log'"
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-stop.sh\""
           }
         ]
       }
