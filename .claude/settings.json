@@ -1,0 +1,69 @@
+{
+  "$schema": "https://claude.com/schemas/settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx prettier:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npx shadcn:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh repo:*)",
+      "Bash(vercel:*)",
+      "Bash(d2:*)",
+      "Bash(aws sts get-caller-identity)",
+      "Bash(aws s3 ls:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf ~:*)",
+      "Bash(:(){ :|:& };:)",
+      "Bash(curl:* | sh)",
+      "Bash(curl:* | bash)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -lc 'test -f .env.local || echo \"[warn] .env.local missing — copy .env.example and fill keys\"; test -n \"$ANTHROPIC_API_KEY\" || echo \"[warn] ANTHROPIC_API_KEY not set\"'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -lc 'for f in $CLAUDE_FILE_PATHS; do case \"$f\" in *.ts|*.tsx|*.js|*.jsx|*.json|*.md|*.css|*.yml|*.yaml) npx --no-install prettier --write \"$f\" >/dev/null 2>&1 || true ;; esac; done'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -lc 'echo \"[claude] session stopped at $(date -u +%FT%TZ)\" >> .claude/session.log'"
+          }
+        ]
+      }
+    ]
+  }
+}
