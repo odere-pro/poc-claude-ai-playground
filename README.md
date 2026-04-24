@@ -14,6 +14,13 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Pre-hackathon setup (T-1 day)
+
+Run the pre-zero checklist end-to-end before the event clock starts:
+
+- [`docs/PRE_ZERO_CHECKLIST.md`](./docs/PRE_ZERO_CHECKLIST.md) — accounts, plugins, MCPs, secrets, Vercel link, CI smoke
+- `bash scripts/preflight.sh` — validation gate; must return `[ALL CLEAR]` before tagging `v0.1.0-preflight-ready`
+
 ## Scripts
 
 | Command               | Purpose            |
@@ -37,7 +44,8 @@ Open `http://localhost:3000`.
 ## Docs
 
 - [`CLAUDE.md`](./CLAUDE.md) — instructions for Claude Code
-- [`SETUP_GUIDE.md`](./SETUP_GUIDE.md) — hackathon environment setup (accounts, tools, pre-flight)
+- [`docs/PRE_ZERO_CHECKLIST.md`](./docs/PRE_ZERO_CHECKLIST.md) — T-1 day setup checklist (Claude + MCPs first, then Vercel + CI)
+- [`docs/SETUP_GUIDE.md`](./docs/SETUP_GUIDE.md) — hackathon environment setup (accounts, tools, pre-flight)
 - [`docs/guides/frontend.md`](./docs/guides/frontend.md) — UI components, routing, state
 - [`docs/guides/backend.md`](./docs/guides/backend.md) — API routes, model calls, data
 - [`docs/guides/uxui.md`](./docs/guides/uxui.md) — shadcn/ui patterns, autoVerify, visual polish
