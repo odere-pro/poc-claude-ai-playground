@@ -7,8 +7,6 @@ The live demo is when 24 hours of work pay off — or don't. Make it bulletproof
 - [ ] Laptop on charger, external display tested
 - [ ] Browser: two tabs — app + `claude mcp list` output as a backup
 - [ ] Terminal: large font (Ghostty `Cmd+=`), `dev` session attached
-- [ ] `npx ngrok http 3000` running; public URL copied
-- [ ] Phone on same WiFi, app pre-loaded via ngrok URL
 - [ ] `.env.local` has live `ANTHROPIC_API_KEY` (not the sandbox one)
 - [ ] Sentry dashboard open in a hidden tab (you'll check post-demo)
 - [ ] Disable notifications system-wide (Do Not Disturb)
@@ -53,7 +51,6 @@ The live demo is when 24 hours of work pay off — or don't. Make it bulletproof
 ### If the dev server crashes
 
 - Have a second terminal ready with `PORT=3001 npm run dev` on standby
-- ngrok's free plan lets you kill + restart the tunnel in 5s
 
 ### If the internet drops at the venue
 
@@ -86,27 +83,17 @@ Keep it ≤ 90 seconds. If you run it, caveat: "same flow, rendered faster — t
 
 Anticipate these — have a two-sentence answer ready:
 
-| Likely question                   | Answer hook                                                                                                |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| "Is this hitting real bank APIs?" | No — rules are encoded from public bank requirements. Future: integrate with open banking.                 |
-| "How accurate is the extraction?" | Show a confidence score per field on the extracted view.                                                   |
-| "What about GDPR?"                | Server-side, ephemeral in-memory, documents discarded after response unless S3 opt-in.                     |
-| "Can I try it on my phone?"       | Yes — scan this QR (ngrok URL).                                                                            |
-| "Why not use [X model]?"          | Anthropic's structured extraction was the best fit; `ANTHROPIC_BEDROCK` switches providers in one env var. |
-| "Business model?"                 | Freemium for users, pay-per-match or API pricing for banks.                                                |
-
-## QR code for the ngrok URL
-
-Generate before you're on stage:
-
-```bash
-npx qrcode-terminal "https://abcd-1234.ngrok.app" > /tmp/qr.txt
-# Or better: include a `?` slide in the deck with the QR image
-```
+| Likely question                   | Answer hook                                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------------------ |
+| "Is this hitting real bank APIs?" | No — rules are encoded from public bank requirements. Future: integrate with open banking. |
+| "How accurate is the extraction?" | Show a confidence score per field on the extracted view.                                   |
+| "What about GDPR?"                | Server-side, ephemeral in-memory, documents discarded after response unless S3 opt-in.     |
+| "Can I try it on my phone?"       | Yes — open the Vercel preview URL on your phone.                                           |
+| "Why not use [X model]?"          | Anthropic's structured extraction was the best fit for this use case.                      |
+| "Business model?"                 | Freemium for users, pay-per-match or API pricing for banks.                                |
 
 ## After the demo
 
-- Keep ngrok running for judge hands-on time
 - Check Sentry for any errors during the run; be ready to explain what they mean
 - Keep the terminal in the foreground — judges sometimes ask to see the prompt you used
 

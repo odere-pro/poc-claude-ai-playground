@@ -4,7 +4,7 @@ Paste your documents → which banks will accept you + what's missing + pre-fill
 
 ## Architecture
 
-Next.js 16 App Router + shadcn/ui. API routes at `src/app/api/*` handle document processing via the Anthropic SDK. Vercel deployment. Optional AWS extensions (S3, DynamoDB, Lambda).
+Next.js 16 App Router + shadcn/ui. API routes at `src/app/api/*` handle document processing via the Anthropic SDK. Vercel deployment.
 
 ## Available tools — use these, don't reinvent
 
@@ -34,7 +34,6 @@ Next.js 16 App Router + shadcn/ui. API routes at `src/app/api/*` handle document
 - **D2** — user flow diagrams (`d2 file.d2 file.svg`).
 - **Marp** — pitch deck (`npx @marp-team/marp-cli slides.md --pptx`).
 - **gh** — branches, PRs, issue management (no GitHub MCP needed).
-- **AWS CLI** — when AWS extensions are active.
 
 ## Conventions
 
@@ -72,7 +71,7 @@ Pre-commit runs lint-staged automatically (lint + format on staged files).
 
 ## Security
 
-- Never persist user documents to disk unless they explicitly opt in (S3 path).
+- Never persist user documents to disk.
 - Never log document contents.
 - Never commit secrets; use `.env.local`.
 - Immigration docs are sensitive. Fix security-reviewer findings immediately.

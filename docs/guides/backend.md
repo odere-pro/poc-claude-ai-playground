@@ -5,8 +5,7 @@ API routes, model calls, data shape, persistence. Server-side only.
 ## Stack
 
 - Next.js API routes (App Router — `route.ts`)
-- Anthropic SDK (provider-abstracted in `src/lib/anthropic.ts`)
-- Optional: AWS SDK (S3, DynamoDB) for persistence extensions
+- Anthropic SDK (`src/lib/anthropic.ts`)
 - zod for boundary validation (add when first needed)
 
 ## Route responsibilities
@@ -21,7 +20,6 @@ Keep routes thin. Business logic lives in `src/lib/*`. Routes validate input, ca
 ## Model client (`src/lib/anthropic.ts`)
 
 - Single instance, `MODEL = "claude-sonnet-4-5"` constant.
-- `ANTHROPIC_BEDROCK=true` switches to Bedrock (same interface).
 - Never log prompts or responses that contain user doc content.
 - Set `max_tokens` tight (4k for extraction, 1k for classification) to stay under function timeouts.
 
@@ -66,12 +64,6 @@ If you change a shape, update the type first. The compiler will walk you through
 
 - Add a simple in-memory limiter (per IP, per minute) on `/api/extract`. Swap to Upstash Redis if you deploy behind shared infrastructure.
 - Return `429` with `Retry-After` on breach.
-
-## Persistence (optional, AWS path)
-
-- S3: store raw documents only if the user opts in. Bucket is private, SSE-S3 on, 30-day lifecycle.
-- DynamoDB: `user_id#timestamp` → match result JSON. TTL 30 days.
-- All keys & credentials via environment variables.
 
 ## Observability
 
