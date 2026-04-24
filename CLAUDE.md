@@ -21,6 +21,10 @@ Next.js 16 App Router + shadcn/ui. API routes at `src/app/api/*` handle document
 - **Vercel** (`vercel@claude-plugins-official`): `/deploy`, `/vercel-logs`.
 - **ECC** (installed under `~/.claude/`): code-reviewer + security-reviewer agents; TS rules; hooks run on save.
 
+### Project agents (in `.claude/agents/`)
+
+- **full-stack-developer** — Project orchestrator. Routes a feature request to the right specialist subagents (`planner`, `code-architect`, `code-explorer`, `tdd-guide`, `code-reviewer`, `typescript-reviewer`, `security-reviewer`, `e2e-runner`, `performance-optimizer`, `build-error-resolver`, `refactor-cleaner`, `doc-updater`, `a11y-architect`) and chains the right MCPs. Enforces the discover → plan → TDD → implement → review → ship pipeline. Read-only — does not write code itself. Invoke for any non-trivial feature, security-sensitive change (uploads / API routes / `src/lib/anthropic.ts`), or end-to-end workflow: `Use the full-stack-developer agent to plan <task>.`
+
 ### Skills
 
 - **shadcn** skill at `.claude/skills/shadcn/` — project-scoped shadcn guidance.
