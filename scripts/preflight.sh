@@ -87,6 +87,88 @@ else
   fi
 fi
 
-# ----- end of §1–§3 (later commits extend: CLIs, env, GH auth, Vercel, secrets, build, e2e) -----
+# ----- §4. CLI tools -----
+section "4. CLI tools"
 
-printf "\n%b[PARTIAL CLEAR]%b Claude + plugins + MCP checks green. Extended checks pending in subsequent commits.\n" "$GREEN" "$RESET"
+require_cli() {
+  local name="$1"
+  command -v "$name" >/dev/null 2>&1 \
+    || fail "$name not on PATH — see docs/PRE_ZERO_CHECKLIST.md §5"
+  ok "$name present"
+}
+
+require_cli node
+require_cli npm
+require_cli git
+require_cli gh
+require_cli vercel
+require_cli d2
+
+if [ "${PREFLIGHT_WITH_AWS:-0}" = "1" ]; then
+  require_cli aws
+else
+  command -v aws >/dev/null 2>&1 && ok "aws present (optional)" || warn "aws missing (optional)"
+fi
+
+if [ "${PREFLIGHT_WITH_NGROK:-0}" = "1" ]; then
+  require_cli ngrok
+else
+  command -v ngrok >/dev/null 2>&1 && ok "ngrok present (optional)" || warn "ngrok missing (optional)"
+fi
+
+# ----- §5. Local env -----
+section "5. Local env (.env.local)"
+
+[ -f .env.local ] || fail ".env.local missing — cp .env.example .env.local and fill ANTHROPIC_API_KEY"
+ok ".env.local exists"
+
+if grep -Eq '^ANTHROPIC_API_KEY=.+' .env.local; then
+  ok "ANTHROPIC_API_KEY set in .env.local"
+else
+  fail "ANTHROPIC_API_KEY missing or empty in .env.local"
+fi
+
+if [ "${PREFLIGHT_WITH_GEMINI:-0}" = "1" ]; then
+  grep -Eq '^GEMINI_API_KEY=.+' .env.local \
+    || fail "GEMINI_API_KEY missing or empty in .env.local (required when PREFLIGHT_WITH_GEMINI=1)"
+  ok "GEMINI_API_KEY set in .env.local"
+fi
+
+# ----- §6. GitHub auth -----
+section "6. GitHub auth"
+
+gh auth status >/dev/null 2>&1 || fail "gh not authenticated — run: gh auth login"
+ok "gh authenticated"
+
+# ----- §7. Vercel link -----
+section "7. Vercel link"
+
+if [ -f .vercel/project.json ]; then
+  ok ".vercel/project.json present"
+else
+  fail ".vercel/project.json missing — run: vercel link --yes"
+fi
+
+# ----- §8. GitHub Actions secrets -----
+section "8. GitHub Actions secrets"
+
+# gh secret list returns lines like "NAME  Updated ...". Just grep names.
+secret_list="$(gh secret list 2>/dev/null || true)"
+
+require_secret() {
+  local name="$1"
+  if printf '%s\n' "$secret_list" | awk '{print $1}' | grep -Fxq "$name"; then
+    ok "GH secret set: $name"
+  else
+    fail "GH secret missing: $name — run: gh secret set $name --body \"<value>\""
+  fi
+}
+
+require_secret ANTHROPIC_API_KEY
+require_secret VERCEL_TOKEN
+require_secret VERCEL_ORG_ID
+require_secret VERCEL_PROJECT_ID
+
+# ----- end of §1–§8 (next commit adds §9–§11: app health, build, e2e) -----
+
+printf "\n%b[PARTIAL CLEAR]%b §1-§8 green. App health / build / e2e pending in the next commit.\n" "$GREEN" "$RESET"
