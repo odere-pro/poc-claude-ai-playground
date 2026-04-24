@@ -169,6 +169,30 @@ require_secret VERCEL_TOKEN
 require_secret VERCEL_ORG_ID
 require_secret VERCEL_PROJECT_ID
 
-# ----- end of §1–§8 (next commit adds §9–§11: app health, build, e2e) -----
+# ----- §9. App health -----
+section "9. App health (npm run check)"
 
-printf "\n%b[PARTIAL CLEAR]%b §1-§8 green. App health / build / e2e pending in the next commit.\n" "$GREEN" "$RESET"
+npm run --silent check \
+  || fail "npm run check failed — typecheck / lint / format issue. Run: npm run fix"
+ok "npm run check passed"
+
+# ----- §10. Build -----
+section "10. Production build (npm run build)"
+
+npm run --silent build \
+  || fail "npm run build failed — see output above"
+ok "npm run build passed"
+
+# ----- §11. E2E -----
+section "11. E2E (npm run test:e2e)"
+
+if [ "${PREFLIGHT_SKIP_E2E:-0}" = "1" ]; then
+  warn "PREFLIGHT_SKIP_E2E=1 — skipping Playwright"
+else
+  npm run --silent test:e2e \
+    || fail "npm run test:e2e failed — see docs/gotchas.md for Playwright troubleshooting"
+  ok "npm run test:e2e passed"
+fi
+
+# ----- All clear -----
+printf "\n%b[ALL CLEAR]%b pre-zero config is green. Safe to tag v0.1.0-preflight-ready.\n" "$GREEN" "$RESET"
