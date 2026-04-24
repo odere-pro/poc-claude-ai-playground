@@ -1,0 +1,65 @@
+# Hackathon environment cheat sheet
+
+## Toolchain at a glance
+
+| Layer    | Tools                                                                      |
+| -------- | -------------------------------------------------------------------------- |
+| Built-in | git, `gh`, bash, autoVerify (screenshot loop)                              |
+| CLI      | D2, Marp, Vercel CLI                                                       |
+| Plugins  | Vercel (`/deploy`, `/vercel-logs`), ECC (code-reviewer, security-reviewer) |
+| MCP      | shadcn/ui, Next.js DevTools, Playwright, Structurizr, Gemini image         |
+| npm      | `@anthropic-ai/sdk`, `@sentry/nextjs`, `@playwright/test`                  |
+
+Rule: if Claude Code can run a CLI command to get the same result, skip the MCP.
+
+---
+
+## Setup (one-time)
+
+```bash
+cp .env.example .env.local   # fill ANTHROPIC_API_KEY
+npm install
+claude mcp list              # verify all 5 show connected
+/deploy                      # verify Vercel preview URL
+```
+
+MCP servers and CI/CD are pre-configured in the repo — no per-developer setup.
+
+---
+
+## Key commands
+
+| What           | Command                                                     |
+| -------------- | ----------------------------------------------------------- |
+| Dev server     | `npm run dev`                                               |
+| Deploy preview | `/deploy` or `vercel deploy`                                |
+| Diagram        | `d2 flow.d2 flow.svg`                                       |
+| Deck export    | `npx @marp-team/marp-cli slides.md --pptx`                  |
+| Test flow      | "use playwright mcp to open localhost:3000 and test [flow]" |
+
+---
+
+## Env variables
+
+```bash
+# Required
+ANTHROPIC_API_KEY=
+
+# Optional
+GEMINI_API_KEY=
+FIGMA_PERSONAL_ACCESS_TOKEN=
+SENTRY_DSN=
+```
+
+---
+
+## Troubleshooting
+
+| Symptom                      | Fix                                                         |
+| ---------------------------- | ----------------------------------------------------------- |
+| MCP won't connect            | `claude mcp remove [name]` then re-add; restart Claude Code |
+| Playwright uses bash not MCP | Say "use playwright mcp" explicitly                         |
+| Vercel 10s timeout           | Split extraction and matching into separate API calls       |
+| ECC hooks slowing you down   | `export ECC_HOOK_PROFILE=minimal`                           |
+| Context degrading            | `/compact` or start new session                             |
+| CI fails, local passes       | Check GitHub Actions secrets match `.env.local`             |

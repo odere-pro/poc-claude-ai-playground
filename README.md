@@ -151,7 +151,7 @@ Pre-commit runs lint-staged automatically (lint + format on staged files).
 - [`docs/guides/backend.md`](./docs/guides/backend.md) — API routes, model calls, data
 - [`docs/guides/uxui.md`](./docs/guides/uxui.md) — shadcn/ui patterns, visual polish
 - [`docs/guides/pitching.md`](./docs/guides/pitching.md) — narrative arc, Marp, Gemini images
-- [`docs/guides/demo.md`](./docs/guides/demo.md) — live-demo script, ngrok, failsafes
+- [`docs/guides/demo.md`](./docs/guides/demo.md) — live-demo script, failsafes
 
 ## Repository layout
 
@@ -176,16 +176,7 @@ Run the pre-zero checklist before the event clock starts:
 
 ## Environment
 
-All variables documented in [`.env.example`](./.env.example).
-
-| Variable                      | Required   | Purpose                           |
-| ----------------------------- | ---------- | --------------------------------- |
-| `ANTHROPIC_API_KEY`           | Yes        | Claude API + Claude Code          |
-| `NGROK_AUTHTOKEN`             | Yes        | Public URL for demo day           |
-| `GEMINI_API_KEY`              | For images | gemini-image MCP                  |
-| `FIGMA_PERSONAL_ACCESS_TOKEN` | Optional   | Design-to-code                    |
-| `AWS_*`                       | Optional   | S3 / DynamoDB / Lambda extensions |
-| `SENTRY_DSN`                  | Optional   | Runtime error monitoring          |
+All variables documented in [`.env.example`](./.env.example). Required: `ANTHROPIC_API_KEY`.
 
 ## License
 

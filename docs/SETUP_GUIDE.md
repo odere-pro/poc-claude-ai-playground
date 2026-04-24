@@ -9,11 +9,9 @@ Everything needed to turn a clean clone into a working hackathon-ready environme
 | GitHub                   | Repo + CI/CD                | github.com            |
 | Vercel                   | Deploy + preview URLs       | vercel.com            |
 | Anthropic                | Claude Code + app inference | console.anthropic.com |
-| ngrok                    | Public URL for judges       | ngrok.com             |
 | Sentry _(opt)_           | Runtime errors              | sentry.io             |
 | Google AI Studio _(opt)_ | Gemini image gen            | aistudio.google.com   |
 | Figma _(opt)_            | Design-to-code              | figma.com             |
-| AWS _(opt)_              | S3 / DynamoDB / Lambda      | aws.amazon.com        |
 
 ## 2. Global tools
 
@@ -27,15 +25,12 @@ node -v
 # D2 — user-flow diagrams
 curl -fsSL https://d2lang.com/install.sh | sh -s --
 
-# AWS CLI (optional)
-aws configure
-
 # gh CLI (already installed & authed)
 gh auth status
 ```
 
 Project-local CLIs (installed via `npm install`):
-`@playwright/test`, `vercel`, `ngrok` — invoke with `npx`.
+`@playwright/test`, `vercel` — invoke with `npx`.
 
 ## 3. Keys
 
@@ -43,13 +38,9 @@ Copy `.env.example` → `.env.local` and fill in:
 
 ```bash
 ANTHROPIC_API_KEY=...
-NGROK_AUTHTOKEN=...
 # Optional below
 GEMINI_API_KEY=...
 FIGMA_PERSONAL_ACCESS_TOKEN=...
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
-AWS_DEFAULT_REGION=eu-west-1
 SENTRY_DSN=...
 ECC_HOOK_PROFILE=minimal
 ```
@@ -121,7 +112,6 @@ Run these before the event. Every one must pass.
 7. `echo 'a -> b' > /tmp/t.d2 && d2 /tmp/t.d2 /tmp/t.svg` → SVG
 8. `npx @marp-team/marp-cli README.md --pptx --output /tmp/t.pptx` → PPTX
 9. Edit a TS file → PostToolUse hook auto-formats with Prettier
-10. `npx ngrok http 3000` → public URL
 
 ## 7. Hackathon day
 
@@ -151,17 +141,15 @@ Before diving in, skim [`docs/gotchas.md`](./docs/gotchas.md) — most hackathon
 | Playwright goes through bash not MCP | Say "use playwright mcp" explicitly in the first message.                 |
 | Context too long                     | `/compact`. If still bad, start new session — memory hook restores state. |
 | CI fails, local build works          | Missing GitHub secret (usually `ANTHROPIC_API_KEY`).                      |
-| ngrok drops mid-demo                 | Free tier = 2h cap; restart `npx ngrok http 3000`.                        |
 
 ## 9. Cost estimate (24h hackathon)
 
-| Item                                   | Cost       |
-| -------------------------------------- | ---------- |
-| Anthropic inference                    | $5–15      |
-| Gemini images (5)                      | $0.50      |
-| AWS (S3 / DynamoDB / Lambda, optional) | < $1       |
-| Vercel / GitHub / ngrok                | Free       |
-| **Total**                              | **~$6–17** |
+| Item                | Cost       |
+| ------------------- | ---------- |
+| Anthropic inference | $5–15      |
+| Gemini images (5)   | $0.50      |
+| Vercel / GitHub     | Free       |
+| **Total**           | **~$6–16** |
 
 ---
 

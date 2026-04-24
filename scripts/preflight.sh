@@ -6,8 +6,6 @@
 #
 # Flags (env vars):
 #   PREFLIGHT_SKIP_E2E=1        skip Playwright (added in a later commit)
-#   PREFLIGHT_WITH_AWS=1        require `aws` CLI
-#   PREFLIGHT_WITH_NGROK=1      require `ngrok` CLI
 #   PREFLIGHT_WITH_GEMINI=1     require gemini-image MCP connected
 
 set -euo pipefail
@@ -104,17 +102,6 @@ require_cli gh
 require_cli vercel
 require_cli d2
 
-if [ "${PREFLIGHT_WITH_AWS:-0}" = "1" ]; then
-  require_cli aws
-else
-  command -v aws >/dev/null 2>&1 && ok "aws present (optional)" || warn "aws missing (optional)"
-fi
-
-if [ "${PREFLIGHT_WITH_NGROK:-0}" = "1" ]; then
-  require_cli ngrok
-else
-  command -v ngrok >/dev/null 2>&1 && ok "ngrok present (optional)" || warn "ngrok missing (optional)"
-fi
 
 # ----- §5. Local env -----
 section "5. Local env (.env.local)"

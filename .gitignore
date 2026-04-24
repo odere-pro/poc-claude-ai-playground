@@ -48,3 +48,6 @@ next-env.d.ts
 # claude code runtime artifacts
 .claude/session.log
 .claude/worktrees/
+
+# local scratch / planning docs
+/tmp

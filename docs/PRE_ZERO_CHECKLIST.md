@@ -101,11 +101,9 @@ Once these three smoke-test green, the rest of the checklist is agent-assisted.
 - [x] **GitHub** — repo exists, `gh` CLI authenticated
 - [ ] **Vercel** — account + project created (project link happens in §7)
 - [ ] **Anthropic** — account + API key (hackathon credits if provided)
-- [!] **ngrok** — only if mobile demo from local machine is part of the pitch
 - [!] **Google AI Studio** — `GEMINI_API_KEY` (only if gemini-image MCP stays in)
 - [!] **Sentry** — add during polish, not pre-zero
 - [!] **Figma** — only if a designer joins
-- [!] **AWS IAM** — only if AWS extensions scoped in
 
 ## 5. CLI tools — install + verify
 
@@ -116,12 +114,9 @@ git --version
 gh --version && gh auth status
 vercel --version || npm i -g vercel
 d2 --version
-# optional per decision log:
-aws --version
-ngrok --version
 ```
 
-Current state: `node`, `npm`, `git`, `gh`, `d2`, `aws`, `@marp-team/marp-cli` (via npx) all in place. Only `vercel` CLI is expected to be missing — install when running the checklist.
+Current state: `node`, `npm`, `git`, `gh`, `d2`, `@marp-team/marp-cli` (via npx) all in place. Only `vercel` CLI is expected to be missing — install when running the checklist.
 
 ## 6. Secrets & env
 
@@ -193,14 +188,10 @@ Exits 0 only if every prior step is healthy. Prints `[ALL CLEAR]` on success.
 Flags:
 
 - `PREFLIGHT_SKIP_E2E=1` — skip Playwright when debugging earlier steps
-- `PREFLIGHT_WITH_AWS=1` — require `aws` CLI
-- `PREFLIGHT_WITH_NGROK=1` — require `ngrok` CLI
 - `PREFLIGHT_WITH_GEMINI=1` — require gemini-image MCP connected
 
 ## 10. Decision log — fill before running the checklist
 
-- [ ] ngrok in or out? → affects §4, §5
-- [ ] AWS extensions in or out? → affects §4, §5, `PREFLIGHT_WITH_AWS`
 - [ ] Sentry in or out? → default: out, add during polish
 - [ ] Designer joining? → Figma PAT needed?
 - [ ] Pitch images via Gemini in or out? → affects §3, §4, §6, `PREFLIGHT_WITH_GEMINI`
