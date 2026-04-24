@@ -86,7 +86,7 @@ Required (must show `✓ Connected`):
 If any show `✗ Failed`:
 
 - **shadcn / nextjs / playwright / structurizr** — restart Claude Code after any `.mcp.json` change; verify npx can reach the registry.
-- **gemini-image** — set `GEMINI_API_KEY` in `.env.local` *and* export it in the shell where you launch Claude Code, then restart Claude.
+- **gemini-image** — set `GEMINI_API_KEY` in `.env.local` _and_ export it in the shell where you launch Claude Code, then restart Claude.
 
 **Smoke-test each critical MCP** (one turn in Claude Code per MCP):
 
