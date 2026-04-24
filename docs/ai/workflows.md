@@ -1,8 +1,34 @@
 # AI Workflows
 
-Seven copy-pasteable workflows for common tasks. Each follows the pattern: **goal → prompts → expected outcome**.
+Eight copy-pasteable workflows for common tasks. Each follows the pattern: **goal → prompts → expected outcome**.
 
 Open Claude Code (`claude`) in the project root before starting any workflow.
+
+When in doubt about which workflow applies — or for any feature spanning UI + API + data — start with workflow 0 below. The orchestrator picks the right combination of agents and MCPs for you.
+
+---
+
+## 0. Orchestrate a feature end-to-end
+
+**Goal:** One entry point that decides which specialist agents and MCPs to chain for a given task. Best for non-trivial work, security-sensitive changes, or anything spanning ≥ 2 layers (UI + API, API + data).
+
+**Prompts**
+
+```
+Use the full-stack-developer agent to plan: add a 10MB upload size cap to /api/extract,
+return 413 with no input echo on oversize, and cover both happy and error paths in Playwright.
+```
+
+```
+Use the full-stack-developer agent to triage: build a results card component that shows
+per-bank acceptance, missing documents, and a CTA. It must be keyboard-accessible.
+```
+
+The orchestrator returns five sections: **Understanding**, **Routing plan** (numbered specialists/MCPs), **Mandatory gates** (e.g. `security-reviewer` for upload changes, `npm run check` before commit), **Files likely affected**, and **Recommended next command**.
+
+**Outcome:** A short, scannable plan you (or the parent session) execute step by step. The orchestrator does not write code — it routes. Specialists like `planner`, `code-architect`, `tdd-guide`, `security-reviewer`, `e2e-runner` do the actual work.
+
+→ Agent definition: [`.claude/agents/full-stack-developer.md`](../../.claude/agents/full-stack-developer.md)
 
 ---
 

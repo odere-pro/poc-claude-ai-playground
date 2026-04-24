@@ -44,9 +44,19 @@ Always say **"use playwright mcp"** explicitly — otherwise Claude defaults to 
 
 → Deep dive: [`docs/ai/mcp-servers.md`](./docs/ai/mcp-servers.md)
 
+### Project agents (in `.claude/agents/`)
+
+Project-scoped agents live in the repo and travel with it. They know this stack, scripts, and security model.
+
+| Agent                    | Trigger                                                      | What it does                                                                                                                                                        |
+| ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **full-stack-developer** | Manual: `Use the full-stack-developer agent to plan <task>.` | Read-only orchestrator. Routes the request to the right specialist subagents and MCPs, and enforces the discover → plan → TDD → implement → review → ship pipeline. |
+
+Use it for any non-trivial feature, security-sensitive change (uploads, API routes, `src/lib/anthropic.ts`), or end-to-end workflow. It returns a routing plan; the parent session executes.
+
 ### ECC agents (user-level, in `~/.claude/`)
 
-Agents run automatically during the session and can be invoked directly.
+Agents run automatically during the session and can be invoked directly. The `full-stack-developer` orchestrator composes these.
 
 | Agent                   | Auto-triggers           | What it does                            |
 | ----------------------- | ----------------------- | --------------------------------------- |
