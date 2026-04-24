@@ -36,7 +36,6 @@
       "Bash(chown -R:*)",
       "Bash(mkfs:*)",
       "Bash(dd if=:*)",
-      "Bash(:(){ :|:& };:)",
       "Bash(curl * | sh)",
       "Bash(curl * | bash)",
       "Bash(wget * | sh)",
