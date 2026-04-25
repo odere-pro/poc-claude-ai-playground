@@ -23,6 +23,17 @@ describe("parseSSEEvent", () => {
     expect(parseSSEEvent('data: {"type":"foo"}')).toBeNull();
   });
 
+  it("drops a clause event with structurally invalid fields", () => {
+    // Wrong status value — schema rejects.
+    const raw = `data: {"type":"clause","id":"c1","title":"x","status":"BOGUS","originalText":"","explanation":"","citation":null,"action":null,"permitConflict":null}`;
+    expect(parseSSEEvent(raw)).toBeNull();
+  });
+
+  it("drops a clause event missing a required field", () => {
+    const raw = `data: {"type":"clause","id":"c1","title":"x","status":"compliant","originalText":"","explanation":"","citation":null,"action":null}`;
+    expect(parseSSEEvent(raw)).toBeNull();
+  });
+
   it("ignores non-data lines (comments, retry, etc)", () => {
     expect(parseSSEEvent(": ping")).toBeNull();
   });

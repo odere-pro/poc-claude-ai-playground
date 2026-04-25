@@ -1,3 +1,4 @@
+import { clauseEventSchema, summaryEventSchema } from "./schemas";
 import type { AnalyzeRequest, ClauseEvent, StreamEvent, SummaryEvent } from "./types";
 
 interface ConsumeOptions {
@@ -99,13 +100,26 @@ function parseSSEEvent(raw: string): StreamEvent | "[DONE]" | null {
   if (dataLines.length === 0) return null;
   const payload = dataLines.join("\n");
   if (payload === "[DONE]") return "[DONE]";
+  let obj: unknown;
   try {
-    const obj = JSON.parse(payload) as StreamEvent;
-    if (obj.type === "clause" || obj.type === "summary") return obj;
-    return null;
+    obj = JSON.parse(payload);
   } catch {
     return null;
   }
+  // Schema-validate before trusting the wire shape — malformed events from
+  // a stale or compromised server are silently dropped instead of corrupting
+  // typed state.
+  if (
+    typeof obj === "object" &&
+    obj !== null &&
+    "type" in obj &&
+    (obj as { type?: unknown }).type === "clause"
+  ) {
+    const r = clauseEventSchema.safeParse(obj);
+    return r.success ? r.data : null;
+  }
+  const s = summaryEventSchema.safeParse(obj);
+  return s.success ? s.data : null;
 }
 
 export const __test__ = { parseSSEEvent };

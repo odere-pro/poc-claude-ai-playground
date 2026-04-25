@@ -2,9 +2,9 @@ import { NextRequest } from "next/server";
 import { getAnthropic, MODEL } from "@/lib/anthropic";
 import { enforceCitation } from "@/lib/citationValidator";
 import { buildAnalysisPrompt } from "@/lib/prompts";
-import { analyzeRequestSchema } from "@/lib/schemas";
+import { analyzeRequestSchema, clauseEventSchema, summaryEventSchema } from "@/lib/schemas";
 import { checkEntitlement, reportUsage } from "@/lib/solvimon";
-import type { ClauseEvent, Jurisdiction, Ruleset, StreamEvent, SummaryEvent } from "@/lib/types";
+import type { Jurisdiction, Ruleset, StreamEvent, SummaryEvent } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -113,17 +113,20 @@ export async function POST(req: NextRequest): Promise<Response> {
       let summaryEmitted = false;
 
       const emitClause = (raw: unknown): void => {
-        const candidate = raw as Partial<ClauseEvent> & { type?: string };
-        if (candidate?.type !== "clause" || typeof candidate.id !== "string") return;
-        const validated = enforceCitation(candidate as ClauseEvent, ruleset);
+        // Schema validate model output before it touches state — a bare cast
+        // would let a structurally-invalid clause reach enforceCitation and
+        // the client. safeParse silently drops malformed events.
+        const result = clauseEventSchema.safeParse(raw);
+        if (!result.success) return;
+        const validated = enforceCitation(result.data, ruleset);
         counts.total += 1;
         counts[validated.status] += 1;
         controller.enqueue(sse(validated));
       };
 
       const emitSummary = (raw: unknown): void => {
-        const candidate = raw as Partial<SummaryEvent> & { type?: string };
-        if (candidate?.type !== "summary") return;
+        const result = summaryEventSchema.safeParse(raw);
+        if (!result.success) return;
         // Recompute counts from validated clauses — model counts may be stale
         // if any clause was downgraded server-side.
         const summary: SummaryEvent = {
@@ -137,7 +140,7 @@ export async function POST(req: NextRequest): Promise<Response> {
           permitConflictCount: counts.permit_conflict,
           uncheckedCount: counts.unchecked,
           compliantCount: counts.compliant,
-          rights: candidate.rights ?? [],
+          rights: result.data.rights,
         };
         controller.enqueue(sse(summary));
         summaryEmitted = true;
