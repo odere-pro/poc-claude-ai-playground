@@ -1,10 +1,12 @@
-# Immigrant Bank Account Readiness Checker
+# Clauseguard
 
-Paste your documents → which banks will accept you + what's missing + pre-filled application.
+Upload an employment contract → get a streamed compliance report in your language with every clause cited to a real legal article.
+
+**Tagline:** _"Know what you signed."_
 
 ## Architecture
 
-Next.js 16 App Router + shadcn/ui. API routes at `src/app/api/*` handle document processing via the Anthropic SDK. Vercel deployment.
+Next.js 16 App Router + shadcn/ui. API routes at `src/app/api/*` stream via Anthropic SDK. JSON rulesets bundled in `data/` and loaded per-request via dynamic `import()`. Vercel deployment. No database — `localStorage` summary only, no full clause text.
 
 ## Default routing
 
@@ -15,29 +17,15 @@ For any task touching code, tests, or config, FIRST invoke the `full-stack-devel
 ### MCP servers (project-scoped, in `.mcp.json`)
 
 - **shadcn**: real-time component docs and props. Query before building UI.
-- **nextjs** (Next.js DevTools): framework docs + dev-server awareness.
-- **playwright**: browser automation. Say "use playwright mcp to test [flow]" for self-QA.
-- **structurizr**: C4 architecture diagrams (hosted). Write Structurizr DSL.
-- **gemini-image**: pitch presentation images only (needs `GEMINI_API_KEY`).
+- **nextjs**: framework docs + dev-server awareness.
+- **playwright**: browser automation for self-QA.
+- **structurizr**: C4 architecture diagrams.
+- **gemini-image**: pitch images only.
 
 ### Plugins
 
 - **Vercel** (`vercel@claude-plugins-official`): `/deploy`, `/vercel-logs`.
-- **ECC** (installed under `~/.claude/`): code-reviewer + security-reviewer agents; TS rules; hooks run on save.
-
-### Project agents (in `.claude/agents/`)
-
-- **full-stack-developer** — Project orchestrator. Routes a feature request to the right specialist subagents (`planner`, `code-architect`, `code-explorer`, `tdd-guide`, `code-reviewer`, `typescript-reviewer`, `security-reviewer`, `e2e-runner`, `performance-optimizer`, `build-error-resolver`, `refactor-cleaner`, `doc-updater`, `a11y-architect`) and chains the right MCPs. Enforces the discover → plan → TDD → implement → review → ship pipeline. Read-only — does not write code itself. Invoke for any non-trivial feature, security-sensitive change (uploads / API routes / `src/lib/anthropic.ts`), or end-to-end workflow: `Use the full-stack-developer agent to plan <task>.`
-
-### Skills
-
-- **shadcn** skill at `.claude/skills/shadcn/` — project-scoped shadcn guidance.
-
-### CLI tools
-
-- **D2** — user flow diagrams (`d2 file.d2 file.svg`).
-- **Marp** — pitch deck (`npx @marp-team/marp-cli slides.md --pptx`).
-- **gh** — branches, PRs, issue management (no GitHub MCP needed).
+- **ECC**: code-reviewer + security-reviewer + typescript-reviewer agents.
 
 ## Conventions
 
@@ -48,64 +36,88 @@ For any task touching code, tests, or config, FIRST invoke the `full-stack-devel
 - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`.
 - One branch per feature. PR before merge.
 
-## Scripts — use these instead of raw tools
+## Scripts
 
-Always prefer `npm run <script>` over calling `tsc` / `eslint` / `prettier` directly. Saves tokens and picks up project config.
+| Script                               | Does                            |
+| ------------------------------------ | ------------------------------- |
+| `npm run dev`                        | Start dev server                |
+| `npm run build`                      | Production build                |
+| `npm run check`                      | typecheck + lint + format check |
+| `npm run fix`                        | lint --fix + format             |
+| `npm run typecheck`                  | `tsc --noEmit`                  |
+| `npm run test`                       | Vitest (unit + integration)     |
+| `npm run test:unit` / `:integration` | Single project                  |
+| `npm run test:e2e`                   | Playwright                      |
+| `npm run ship`                       | check + test + build            |
 
-| Script                                    | Does                                         |
-| ----------------------------------------- | -------------------------------------------- |
-| `npm run dev`                             | Start dev server                             |
-| `npm run build`                           | Production build                             |
-| `npm run check`                           | typecheck + lint + format check (fast, safe) |
-| `npm run fix`                             | lint --fix + format (auto-apply)             |
-| `npm run typecheck`                       | `tsc --noEmit` only                          |
-| `npm run lint` / `npm run lint:fix`       | ESLint                                       |
-| `npm run format` / `npm run format:check` | Prettier                                     |
-| `npm run test:e2e`                        | Playwright                                   |
-| `npm run ship`                            | `check` + `build` — run before push          |
-
-Pre-commit runs lint-staged automatically (lint + format on staged files).
+Pre-commit runs lint-staged on staged files.
 
 ## Testing
 
-- One Playwright happy-path test (upload → match → results).
-- One error-case test (invalid document).
-- Run: `npm run test:e2e`.
-- Interactive: "use playwright mcp to open localhost:3000 and test [flow]".
+- Unit: `src/lib/*.test.ts`, `src/context/*.test.tsx`
+- Integration: `src/app/api/**/*.test.ts`, `src/components/**/*.test.tsx` (MSW + happy-dom)
+- E2E: `tests/e2e/*.spec.ts` (Playwright)
+- One Playwright happy-path + one error-path per user-facing flow.
+- No mocking the Anthropic SDK at integration level — stub at the route handler boundary.
+- Fixtures in `data/fixtures/` are anonymized; never check in real user data.
 
-## Security
+## Security (immigration + employment docs = sensitive)
 
+- Never log contract content, filenames, or user PII.
 - Never persist user documents to disk.
-- Never log document contents.
-- Never commit secrets; use `.env.local`.
-- Immigration docs are sensitive. Fix security-reviewer findings immediately.
+- All uploads validated: MIME allowlist + magic-byte check + 10MB size cap.
+- Anthropic / Solvimon / Reson8 keys server-only. Never expose to client bundle.
+- CSP headers; no inline scripts.
+- Rate-limit `/api/analyze`, `/api/transcribe`, `/api/voice-command` per IP.
+- Strip EXIF / metadata from images before processing.
+- Error responses must NOT echo input back to the client.
+
+## Groundedness rules (NON-NEGOTIABLE)
+
+- Flagged clauses MUST have a citation matching a rule in the loaded ruleset.
+- Citations not present in the ruleset are hallucinations — `lib/citationValidator` MUST catch them.
+- Clauses with no matching rule are marked `unchecked`, never silently dropped.
+- `citation.source` MUST be exactly `"{jurisdiction}-labor-law.json"`.
+
+## Reuse rules
+
+- No color values in component files — only `var(--color-*)`.
+- No font-family / font-size in component files — only `var(--font-*)` / `var(--text-*)`.
+- `CitationBlock` required inside every `ClauseCard` where `status !== "unchecked"` (CI-enforced).
+- `VoiceController` renders once per page, gated by `NEXT_PUBLIC_VOICE_ENABLED`.
+- Atoms have no internal state — purely controlled.
 
 ## Deployment
 
 - `/deploy` (Vercel plugin) or `vercel deploy`.
-- CI on every push: lint, typecheck, build, Playwright.
+- CI on every push: lint, typecheck, vitest, build, Playwright against preview URL.
 - Production auto-deploys on merge to `main`.
-
-## Gotchas (must read)
-
-- `docs/gotchas.md` is a running log of non-obvious pitfalls on this stack. Read it before debugging any issue in Vercel, shadcn, Playwright MCP, Next.js 16, Tailwind v4, or ECC hooks.
-- When you spend ≥ 15 min diagnosing a non-obvious bug, append a new entry following the template in `docs/gotchas.md`. Rule detail in `.claude/rules/gotchas.md`.
 
 ## Domain knowledge
 
-- `data/bank-rules/*.json` — one per bank (ING, ABN AMRO, Bunq, Rabobank).
-  Shape defined in `src/lib/types.ts` → `BankRules`.
-- `data/document-types.json` — canonical document type keys.
-- `data/permit-categories.json` — IND permit categories.
-- `docs/matching-logic.md` — matching rules and scoring.
-- `tests/fixtures/` — anonymized sample documents.
-
-All placeholder during scaffold. Populate before the hackathon.
+- `data/nl-labor-law.json` — Dutch labor law rules. Every citation article must match an entry.
+- `data/se-labor-law.json` — Swedish labor law (LAS).
+- `data/nl-permit-categories.json` — IND permit types. Do not invent restrictions.
+- `data/se-permit-categories.json` — Migrationsverket permit types.
+- `data/rights-summary-{nl,se}.json` — union contacts + rights.
+- `data/fixtures/` — anonymized test contracts.
 
 ## Key source files
 
-- `src/lib/anthropic.ts` — provider-abstracted Anthropic client + `MODEL` constant.
-- `src/lib/matching.ts` — `matchBank(rules, docs, opts)` returns `MatchResult`.
-- `src/lib/types.ts` — shared types.
-- `src/app/api/extract/route.ts` — document extraction endpoint (stub).
-- `src/app/api/match/route.ts` — bank matching endpoint (stub).
+- `src/lib/anthropic.ts` — Anthropic SDK client + `MODEL`.
+- `src/lib/prompts.ts` — `buildAnalysisPrompt`, `buildVoiceIntentPrompt`.
+- `src/lib/citationValidator.ts` — presence + authenticity validation.
+- `src/lib/clauseOrdering.ts` — sort priority for results.
+- `src/lib/streamClient.ts` — client-side SSE consumer with 100ms batching.
+- `src/lib/solvimon.ts` — `checkEntitlement` + `reportUsage` (soft-fail).
+- `src/lib/languageDetector.ts` — localStorage → browser → "en" cascade.
+- `src/lib/types.ts` — shared types (Jurisdiction, ClauseEvent, SummaryEvent, …).
+- `src/context/ReportContext.tsx` — global state + reducer.
+- `src/app/api/analyze/route.ts` — main streaming endpoint.
+- `src/app/api/transcribe/route.ts` — Reson8 STT proxy (P1).
+- `src/app/api/voice-command/route.ts` — Claude tool-use voice intent (P1).
+
+## Gotchas
+
+- `docs/gotchas.md` is a running log of non-obvious pitfalls. Read it before debugging Vercel, shadcn, Playwright MCP, Next.js 16, or Tailwind v4 issues.
+- Append a new entry when a non-obvious bug costs ≥ 15 min. See `.claude/rules/gotchas.md`.
