@@ -9,6 +9,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from "react";
+import { savedSummarySchema } from "@/lib/schemas";
 import type {
   ClauseEvent,
   Jurisdiction,
@@ -204,19 +205,27 @@ export function ReportProvider({ children }: { children: ReactNode }) {
   // Hydrate savedSummary from localStorage on mount.
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    let json: unknown;
     try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as SavedSummary;
-      if (Date.now() - parsed.savedAt > STORAGE_TTL_MS) {
-        window.localStorage.removeItem(STORAGE_KEY);
-        return;
-      }
-      dispatch({ type: "LOAD_SAVED_SUMMARY", saved: parsed });
+      json = JSON.parse(raw);
     } catch {
-      // Corrupted entry — ignore and clear.
       window.localStorage.removeItem(STORAGE_KEY);
+      return;
     }
+    // Schema-validate the blob — a tampered or version-skewed entry
+    // is cleared rather than dispatched into the reducer.
+    const result = savedSummarySchema.safeParse(json);
+    if (!result.success) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    if (Date.now() - result.data.savedAt > STORAGE_TTL_MS) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    dispatch({ type: "LOAD_SAVED_SUMMARY", saved: result.data });
   }, []);
 
   // Persist savedSummary on change. Summary-only — never raw clause text.

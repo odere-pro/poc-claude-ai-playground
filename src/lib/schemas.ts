@@ -101,11 +101,15 @@ export const summaryEventSchema = z.object({
 
 export const MAX_CONTRACT_BYTES = 100 * 1024;
 
+// TextEncoder is available in Node 18+ and every browser — use it instead
+// of Buffer.byteLength so this schema file is safe to import client-side.
+const utf8ByteLength = (s: string): number => new TextEncoder().encode(s).byteLength;
+
 export const analyzeRequestSchema = z.object({
   contractText: z
     .string()
     .min(1)
-    .refine((s) => Buffer.byteLength(s, "utf-8") <= MAX_CONTRACT_BYTES, {
+    .refine((s) => utf8ByteLength(s) <= MAX_CONTRACT_BYTES, {
       message: "contractText exceeds 100KB",
     }),
   permitType: z.string().min(1),
@@ -126,3 +130,15 @@ export const voiceCommandRequestSchema = z.object({
   reportContext: voiceReportContextSchema,
 });
 export type VoiceCommandRequestInput = z.infer<typeof voiceCommandRequestSchema>;
+
+// Validated when hydrating from localStorage. A corrupted or
+// version-skewed blob fails parse and is cleared rather than
+// dispatched into the reducer.
+export const savedSummarySchema = z.object({
+  summary: summaryEventSchema,
+  jurisdiction: jurisdictionSchema,
+  permitType: z.string().min(1),
+  detectedLanguage: supportedLanguageSchema,
+  savedAt: z.number().int().nonnegative(),
+});
+export type SavedSummaryInput = z.infer<typeof savedSummarySchema>;
