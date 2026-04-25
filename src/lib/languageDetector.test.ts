@@ -1,54 +1,16 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { detectLanguage, detectFromVoice, setExplicitLanguage } from "./languageDetector";
 
-// Node 25 ships an experimental built-in `localStorage` with no usable
-// methods unless --localstorage-file is set. That shadow breaks
-// happy-dom's window.localStorage. Install a Map-backed stub for tests.
-class MemoryStorage implements Storage {
-  private store = new Map<string, string>();
-  get length(): number {
-    return this.store.size;
-  }
-  clear(): void {
-    this.store.clear();
-  }
-  getItem(key: string): string | null {
-    return this.store.has(key) ? (this.store.get(key) as string) : null;
-  }
-  key(index: number): string | null {
-    return Array.from(this.store.keys())[index] ?? null;
-  }
-  removeItem(key: string): void {
-    this.store.delete(key);
-  }
-  setItem(key: string, value: string): void {
-    this.store.set(key, String(value));
-  }
-}
-
-let storage: MemoryStorage;
-
-beforeEach(() => {
-  storage = new MemoryStorage();
-  Object.defineProperty(window, "localStorage", {
-    value: storage,
-    configurable: true,
-    writable: true,
-  });
-});
-
-afterEach(() => {
-  storage.clear();
-});
+// localStorage stub installed globally in tests/setup.ts.
 
 describe("detectLanguage", () => {
   it("returns stored language when localStorage has a supported value", () => {
-    storage.setItem("clauseguard_language", "uk");
+    window.localStorage.setItem("clauseguard_language", "uk");
     expect(detectLanguage()).toBe("uk");
   });
 
   it("ignores stored language when unsupported", () => {
-    storage.setItem("clauseguard_language", "ja");
+    window.localStorage.setItem("clauseguard_language", "ja");
     Object.defineProperty(window.navigator, "language", {
       value: "nl-NL",
       configurable: true,
@@ -89,7 +51,7 @@ describe("detectFromVoice", () => {
 describe("setExplicitLanguage", () => {
   it("persists the language to localStorage", () => {
     setExplicitLanguage("pl");
-    expect(storage.getItem("clauseguard_language")).toBe("pl");
+    expect(window.localStorage.getItem("clauseguard_language")).toBe("pl");
   });
 
   it("round-trips through detectLanguage", () => {
