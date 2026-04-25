@@ -14,6 +14,8 @@ interface ClauseCardProps {
 
 export function ClauseCard({ clause, highlighted, expanded, onToggleExpand }: ClauseCardProps) {
   const flagged = clause.status !== "unchecked" && clause.status !== "compliant";
+  const detailId = `clause-detail-${clause.id}`;
+  const isExpanded = !!expanded;
   return (
     <Card
       data-testid="clause-card"
@@ -40,15 +42,18 @@ export function ClauseCard({ clause, highlighted, expanded, onToggleExpand }: Cl
             type="button"
             data-testid="clause-toggle"
             onClick={onToggleExpand}
+            aria-expanded={isExpanded}
+            aria-controls={detailId}
+            aria-label={`${isExpanded ? "Collapse" : "Expand"} clause: ${clause.title}`}
             className="text-muted-foreground hover:text-foreground text-xs underline-offset-2 hover:underline"
           >
-            {expanded ? "Collapse" : "Expand"}
+            {isExpanded ? "Collapse" : "Expand"}
           </button>
         )}
       </div>
 
-      {expanded && (
-        <div className="flex flex-col gap-3 px-4 pb-4">
+      {isExpanded && (
+        <div id={detailId} className="flex flex-col gap-3 px-4 pb-4">
           {clause.explanation && (
             <p className="leading-relaxed" style={{ fontSize: "var(--text-clause-body)" }}>
               {clause.explanation}

@@ -75,19 +75,24 @@ export function UploadZone({ onText, disabled }: UploadZoneProps) {
           const file = e.dataTransfer.files[0];
           if (file) void handleFile(file);
         }}
-        className="border-border hover:border-foreground/40 flex min-h-48 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-8 text-center transition-colors data-[dragging=true]:border-[var(--color-status-illegal)] data-[dragging=true]:bg-[var(--color-status-illegal-bg)]"
-        onClick={() => inputRef.current?.click()}
+        className="border-border flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-8 text-center transition-colors data-[dragging=true]:border-[var(--color-status-illegal)] data-[dragging=true]:bg-[var(--color-status-illegal-bg)]"
       >
         <p className="text-base font-medium">Drop your contract here</p>
         <p className="text-muted-foreground text-sm">PDF · JPEG · PNG · TXT — up to 10MB</p>
         {filename && (
-          <p data-testid="upload-filename" className="font-mono text-sm opacity-70">
+          <p
+            data-testid="upload-filename"
+            role="status"
+            aria-live="polite"
+            className="font-mono text-sm opacity-70"
+          >
             ✓ {filename}
           </p>
         )}
         <input
           ref={inputRef}
           type="file"
+          aria-label="Upload contract file"
           accept="application/pdf,image/jpeg,image/png,text/plain"
           className="hidden"
           disabled={disabled}
@@ -96,7 +101,15 @@ export function UploadZone({ onText, disabled }: UploadZoneProps) {
             if (f) void handleFile(f);
           }}
         />
-        <Button size="sm" variant="outline" disabled={disabled}>
+        {/* Clickable, focusable, keyboard-operable trigger. Removing the
+            div-level onClick fixes WCAG 2.1.1 — the drop zone is now
+            mouse/drag-only with this button as the keyboard alternative. */}
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={disabled}
+          onClick={() => inputRef.current?.click()}
+        >
           Browse files
         </Button>
       </div>
