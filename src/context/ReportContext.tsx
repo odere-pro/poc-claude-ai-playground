@@ -180,10 +180,11 @@ export function reducer(state: AppState, action: Action): AppState {
         detectedLanguage: state.detectedLanguage,
       };
 
-    default: {
-      const _exhaustive: never = action;
+    default:
+      // Exhaustiveness: TS errors here if a new Action variant is added
+      // without a case above. Cast satisfies eslint's no-unused-vars.
+      action satisfies never;
       return state;
-    }
   }
 }
 
