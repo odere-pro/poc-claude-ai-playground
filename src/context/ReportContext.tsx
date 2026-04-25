@@ -24,6 +24,7 @@ export const initialState: AppState = {
   voiceState: "idle",
   lastSpokenText: "",
   savedSummary: null,
+  contractText: "",
 };
 
 export function reducer(state: AppState, action: Action): AppState {
@@ -38,6 +39,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, permitType: action.payload };
     case "SET_LANGUAGE":
       return { ...state, detectedLanguage: action.payload };
+    case "SET_CONTRACT_TEXT":
+      return { ...state, contractText: action.payload };
     case "START_ANALYSIS":
       return {
         ...state,
@@ -96,6 +99,7 @@ export function reducer(state: AppState, action: Action): AppState {
       return {
         ...initialState,
         detectedLanguage: state.detectedLanguage,
+        contractText: "",
       };
   }
 }

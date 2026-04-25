@@ -52,6 +52,9 @@ export function UploadZone() {
   const ready = tab === "text" ? text.trim().length > 0 : fileName !== null;
 
   const onAnalyze = () => {
+    const payload = tab === "text" ? text.trim() : (fileName ?? "");
+    if (!payload) return;
+    dispatch({ type: "SET_CONTRACT_TEXT", payload });
     dispatch({ type: "START_ANALYSIS" });
     router.push("/analyzing");
   };

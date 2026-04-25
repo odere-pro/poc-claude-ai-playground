@@ -204,12 +204,16 @@ export interface AppState {
   readonly voiceState: VoiceState;
   readonly lastSpokenText: string;
   readonly savedSummary: SavedSummary | null;
+  // In-memory only — never persisted to localStorage (see ReportContext
+  // useEffect for the SavedSummary shape that *is* persisted).
+  readonly contractText: string;
 }
 
 export type Action =
   | { type: "SET_JURISDICTION"; payload: Jurisdiction }
   | { type: "SET_PERMIT_TYPE"; payload: string }
   | { type: "SET_LANGUAGE"; payload: SupportedLanguage }
+  | { type: "SET_CONTRACT_TEXT"; payload: string }
   | { type: "START_ANALYSIS" }
   | { type: "RECEIVE_CLAUSES_BATCH"; payload: readonly ClauseEvent[] }
   | { type: "FINALIZE_REPORT"; payload: SummaryEvent }
