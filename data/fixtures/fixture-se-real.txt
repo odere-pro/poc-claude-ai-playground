@@ -1,0 +1,22 @@
+EMPLOYMENT CONTRACT — ANONYMIZED FIXTURE (SE)
+
+Mixes 1 illegal, 2 compliant, and 1 unchecked clause.
+Used by the SE jurisdiction-swap e2e test.
+
+----------------------------------------------------------------
+
+§ 1 — Provanställning
+The employee shall serve a probation period of nine (9) months,
+during which either party may terminate without notice.
+
+§ 2 — Arbetstid
+Regular working time is 40 hours per week, Monday through Friday.
+Overtime is compensated according to collective agreement terms.
+
+§ 3 — Uppsägningstid
+Notice of termination by either party is one (1) month for the
+first two years of service, increasing per LAS thereafter.
+
+§ 4 — Sekretess
+The employee agrees to keep proprietary information confidential
+both during and after employment.

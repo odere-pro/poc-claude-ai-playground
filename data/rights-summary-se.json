@@ -1,0 +1,28 @@
+{
+  "jurisdiction": "se",
+  "union": {
+    "name": "Unionen",
+    "url": "https://www.unionen.se/",
+    "phone": "+46 770 870 870"
+  },
+  "rights": [
+    {
+      "title": "Right to convert to indefinite employment",
+      "description": "If a trial employment lasts longer than 6 months without action, it automatically becomes indefinite (tillsvidareanställning).",
+      "citation": {
+        "article": "LAS § 6",
+        "label": "Trial period (provanställning)",
+        "source": "se-labor-law.json"
+      }
+    },
+    {
+      "title": "Right to a notice period scaled to service",
+      "description": "After 2 years of service the statutory notice period rises above 1 month. Contractual reductions below this floor are unenforceable.",
+      "citation": {
+        "article": "LAS § 11",
+        "label": "Notice period (uppsägningstid)",
+        "source": "se-labor-law.json"
+      }
+    }
+  ]
+}

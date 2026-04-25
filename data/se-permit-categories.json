@@ -1,0 +1,11 @@
+{
+  "jurisdiction": "se",
+  "permits": [
+    {
+      "id": "arbetstillstand",
+      "label": "Arbetstillstånd (work permit)",
+      "default": true,
+      "forbiddenClauseTags": ["below-collective-agreement-rate"]
+    }
+  ]
+}

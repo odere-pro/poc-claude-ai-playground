@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReportProvider } from "@/context/ReportContext";
 import { AppHeader } from "@/components/organisms/AppHeader";
+import { VoiceController } from "@/components/organisms/VoiceController";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,8 @@ export default function RootLayout({
         <ReportProvider>
           <AppHeader />
           <main className="flex-1">{children}</main>
+          {/* Single voice mount per spec; gated by NEXT_PUBLIC_VOICE_ENABLED. */}
+          <VoiceController />
         </ReportProvider>
       </body>
     </html>
