@@ -1,0 +1,129 @@
+{
+  "jurisdiction": "nl",
+  "source": "nl-labor-law.json",
+  "rules": [
+    {
+      "id": "nl-noncompete-validity",
+      "clauseType": "non-compete",
+      "article": "Art. 7:653",
+      "law": "Burgerlijk Wetboek (BW)",
+      "description": "Non-compete clauses",
+      "conditions": [
+        "Clause must specify geographic scope",
+        "Clause must specify duration (max 1 year standard)",
+        "Only valid for employees earning above €5,500/month gross",
+        "Must be in writing and signed",
+        "Indefinite-term contracts only, unless employer demonstrates substantial business interest in writing"
+      ],
+      "illegalIf": [
+        "No geographic scope specified",
+        "Duration exceeds 1 year without compensation",
+        "Employee earns below €5,500/month",
+        "Applied to fixed-term contract without written justification of substantial business interest"
+      ],
+      "exploitativeIf": [
+        "Duration is 12 months with no compensation clause",
+        "Scope covers entire EU without justification"
+      ],
+      "source": "nl-labor-law.json"
+    },
+    {
+      "id": "nl-probation-period",
+      "clauseType": "probation",
+      "article": "Art. 7:652",
+      "law": "Burgerlijk Wetboek (BW)",
+      "description": "Probationary period",
+      "conditions": [
+        "Probation must be agreed in writing",
+        "Maximum 1 month for fixed-term contracts under 2 years",
+        "Maximum 2 months for indefinite or fixed-term ≥ 2 years",
+        "No probation allowed on fixed-term contracts of 6 months or less"
+      ],
+      "illegalIf": [
+        "Probation exceeds 1 month on a fixed-term contract under 2 years",
+        "Probation exceeds 2 months on any contract",
+        "Probation present on fixed-term contract of 6 months or less"
+      ],
+      "exploitativeIf": ["Probation matches the legal maximum without justification"],
+      "source": "nl-labor-law.json"
+    },
+    {
+      "id": "nl-notice-period",
+      "clauseType": "notice",
+      "article": "Art. 7:672",
+      "law": "Burgerlijk Wetboek (BW)",
+      "description": "Notice periods for termination",
+      "conditions": [
+        "Statutory minimum employer notice: 1 month (<5y service), 2m (5–10y), 3m (10–15y), 4m (15y+)",
+        "Statutory minimum employee notice: 1 month",
+        "Notice must be given before the end of the calendar month",
+        "Longer notice for the employee requires equally longer notice for the employer (max 6m)"
+      ],
+      "illegalIf": [
+        "Employer notice shorter than statutory minimum",
+        "Employee required to give longer notice than employer without doubling the employer's notice"
+      ],
+      "exploitativeIf": ["Employee notice 3+ months while employer notice remains 1 month"],
+      "source": "nl-labor-law.json"
+    },
+    {
+      "id": "nl-overtime-limits",
+      "clauseType": "overtime",
+      "article": "Arbeidstijdenwet §5:7",
+      "law": "Arbeidstijdenwet",
+      "description": "Working time and overtime limits",
+      "conditions": [
+        "Maximum 12 hours per shift",
+        "Maximum 60 hours per week",
+        "Average maximum 48 hours per week over 16 weeks",
+        "Average maximum 55 hours per week over 4 weeks"
+      ],
+      "illegalIf": [
+        "Single shift exceeds 12 hours",
+        "Single week exceeds 60 hours",
+        "Sustained schedule averages above 48h/16w or 55h/4w"
+      ],
+      "exploitativeIf": ["Open-ended overtime obligation with no compensation or rest guarantees"],
+      "source": "nl-labor-law.json"
+    },
+    {
+      "id": "nl-working-hours",
+      "clauseType": "working-hours",
+      "article": "Arbeidstijdenwet §5:7",
+      "law": "Arbeidstijdenwet",
+      "description": "Standard working hours",
+      "conditions": [
+        "Standard full-time hours typically 36–40 per week",
+        "Daily rest of at least 11 consecutive hours per 24h",
+        "Weekly rest of at least 36 consecutive hours per 7-day period"
+      ],
+      "illegalIf": [
+        "Daily rest below 11 consecutive hours",
+        "Weekly rest below 36 consecutive hours",
+        "Standard scheduled hours exceed Arbeidstijdenwet ceilings"
+      ],
+      "exploitativeIf": ["Standard week scheduled at 45+ hours without overtime pay"],
+      "source": "nl-labor-law.json"
+    },
+    {
+      "id": "nl-trial-period",
+      "clauseType": "trial-period",
+      "article": "Art. 7:676",
+      "law": "Burgerlijk Wetboek (BW)",
+      "description": "Trial period termination",
+      "conditions": [
+        "Either party may terminate without notice during a valid probation period",
+        "Termination must comply with non-discrimination and good-faith principles",
+        "Reason must be communicated in writing on request"
+      ],
+      "illegalIf": [
+        "Termination during probation occurs after probation period has expired",
+        "Termination based on a discriminatory ground"
+      ],
+      "exploitativeIf": [
+        "Trial-period termination without any communicated reason and a pattern targeting migrant workers"
+      ],
+      "source": "nl-labor-law.json"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "jurisdiction": "nl",
+  "language": "nl",
+  "rights": [
+    {
+      "text": "You may refuse an unenforceable non-compete clause.",
+      "citation": {
+        "article": "Art. 7:653",
+        "law": "Burgerlijk Wetboek (BW)",
+        "description": "Non-compete clauses",
+        "source": "nl-labor-law.json"
+      }
+    },
+    {
+      "text": "You are entitled to written notice of dismissal that meets the statutory minimum for your tenure.",
+      "citation": {
+        "article": "Art. 7:672",
+        "law": "Burgerlijk Wetboek (BW)",
+        "description": "Notice periods",
+        "source": "nl-labor-law.json"
+      }
+    },
+    {
+      "text": "Your probation period is capped — anything longer than the legal maximum is void from the start.",
+      "citation": {
+        "article": "Art. 7:652",
+        "law": "Burgerlijk Wetboek (BW)",
+        "description": "Probationary period",
+        "source": "nl-labor-law.json"
+      }
+    },
+    {
+      "text": "You have the right to weekly rest of at least 36 consecutive hours and daily rest of at least 11 hours.",
+      "citation": {
+        "article": "Arbeidstijdenwet §5:7",
+        "law": "Arbeidstijdenwet",
+        "description": "Working time limits",
+        "source": "nl-labor-law.json"
+      }
+    }
+  ],
+  "support": {
+    "name": "FNV",
+    "url": "https://www.fnv.nl/contact",
+    "description": "Free labor union advice"
+  }
+}

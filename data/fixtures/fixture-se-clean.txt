@@ -1,0 +1,27 @@
+SAMPLE EMPLOYMENT CONTRACT — FOR TESTING ONLY (CLEAN STATE)
+
+Between: Nordic Logistics AB ("Employer")
+And:    [Worker Name] ("Employee")
+Date:   1 March 2026
+
+The Employer and the Employee agree as follows.
+
+1. PROBATION
+   The Employee is engaged on a probationary basis for a period of
+   6 months, after which the role converts to permanent employment.
+
+2. NOTICE PERIOD
+   Statutory notice applies in accordance with LAS §11 based on the
+   Employee's tenure. Both parties shall provide written notice.
+
+3. WORKING HOURS
+   Standard ordinary working time is 40 hours per week. The Employee
+   receives 11 consecutive hours of daily rest and 36 consecutive
+   hours of weekly rest.
+
+4. NON-COMPETE
+   No non-compete restriction applies after termination.
+
+Signed at Stockholm.
+
+[signatures redacted — sample document]

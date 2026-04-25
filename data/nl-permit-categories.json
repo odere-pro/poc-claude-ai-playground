@@ -1,0 +1,30 @@
+{
+  "jurisdiction": "nl",
+  "source": "nl-permit-categories.json",
+  "permits": [
+    {
+      "id": "gvva",
+      "name": "Gecombineerde vergunning voor verblijf en arbeid (GVVA)",
+      "authority": "IND",
+      "conditions": {
+        "maxHoursPerWeek": null,
+        "sectorRestrictions": "Tied to the employer named on the permit",
+        "locationRestrictions": "Netherlands only",
+        "salaryMinimum": "Must meet IND salary threshold for the role category"
+      },
+      "source": "nl-permit-categories.json"
+    },
+    {
+      "id": "kennismigrant",
+      "name": "Kennismigrant",
+      "authority": "IND",
+      "conditions": {
+        "maxHoursPerWeek": null,
+        "sectorRestrictions": "None — any sector allowed",
+        "locationRestrictions": "Netherlands only",
+        "salaryMinimum": "€5,688/month gross (2025, age 30+)"
+      },
+      "source": "nl-permit-categories.json"
+    }
+  ]
+}

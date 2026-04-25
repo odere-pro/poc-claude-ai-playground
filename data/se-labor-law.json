@@ -1,0 +1,85 @@
+{
+  "jurisdiction": "se",
+  "source": "se-labor-law.json",
+  "rules": [
+    {
+      "id": "se-probation-period",
+      "clauseType": "probation",
+      "article": "LAS §6",
+      "law": "Lagen om anställningsskydd (LAS)",
+      "description": "Probationary employment",
+      "conditions": [
+        "Probation may not exceed 6 months",
+        "Probation must be agreed in writing",
+        "Either party may terminate during probation; otherwise it converts to a permanent role"
+      ],
+      "illegalIf": [
+        "Probation period exceeds 6 months",
+        "Probation extended beyond 6 months by amendment"
+      ],
+      "exploitativeIf": [
+        "Successive probationary periods used to avoid converting the role to permanent"
+      ],
+      "source": "se-labor-law.json"
+    },
+    {
+      "id": "se-notice-period",
+      "clauseType": "notice",
+      "article": "LAS §11",
+      "law": "Lagen om anställningsskydd (LAS)",
+      "description": "Notice periods",
+      "conditions": [
+        "Employer minimum: 1 month (<2y), 2m (2–4y), 3m (4–6y), 4m (6–8y), 5m (8–10y), 6m (10y+)",
+        "Employee minimum: 1 month",
+        "Statutory minimums apply unless a CBA grants longer terms"
+      ],
+      "illegalIf": [
+        "Employer notice shorter than statutory minimum for the employee's tenure",
+        "Employee held to longer notice than the employer without compensating mechanism"
+      ],
+      "exploitativeIf": [
+        "Notice for the employee set at 3+ months while employer keeps statutory minimum"
+      ],
+      "source": "se-labor-law.json"
+    },
+    {
+      "id": "se-noncompete",
+      "clauseType": "non-compete",
+      "article": "LAS §38",
+      "law": "Lagen om anställningsskydd (LAS)",
+      "description": "Non-compete restrictions",
+      "conditions": [
+        "Restrictions must be reasonable in scope, duration, and geography",
+        "Must protect a legitimate business interest (trade secrets, key client relationships)",
+        "Compensation typically required for the restricted period"
+      ],
+      "illegalIf": [
+        "No legitimate business interest demonstrated",
+        "Duration exceeds what is reasonable for the role",
+        "No compensation offered for the restricted period"
+      ],
+      "exploitativeIf": ["Geographic scope covers all of Sweden for an entry-level role"],
+      "source": "se-labor-law.json"
+    },
+    {
+      "id": "se-working-hours",
+      "clauseType": "working-hours",
+      "article": "Arbetstidslagen §5",
+      "law": "Arbetstidslagen",
+      "description": "Working hours and rest",
+      "conditions": [
+        "Standard ordinary working time is 40 hours per week",
+        "Maximum 48 hours per week averaged over 4 months including overtime",
+        "At least 11 consecutive hours of daily rest per 24h",
+        "At least 36 consecutive hours of weekly rest per 7 days"
+      ],
+      "illegalIf": [
+        "Ordinary scheduled time above 40 hours per week",
+        "Average weekly hours above 48 over 4 months",
+        "Daily rest under 11 hours or weekly rest under 36 hours"
+      ],
+      "exploitativeIf": ["Open-ended overtime obligation without compensation"],
+      "source": "se-labor-law.json"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "jurisdiction": "se",
+  "language": "sv",
+  "rights": [
+    {
+      "text": "Your probation cannot last longer than 6 months — beyond that, you have a permanent role.",
+      "citation": {
+        "article": "LAS §6",
+        "law": "Lagen om anställningsskydd (LAS)",
+        "description": "Probationary employment",
+        "source": "se-labor-law.json"
+      }
+    },
+    {
+      "text": "Your statutory notice grows with tenure; the employer cannot give you less than the law requires.",
+      "citation": {
+        "article": "LAS §11",
+        "law": "Lagen om anställningsskydd (LAS)",
+        "description": "Notice periods",
+        "source": "se-labor-law.json"
+      }
+    },
+    {
+      "text": "A non-compete must protect a legitimate business interest and be reasonable in scope and duration.",
+      "citation": {
+        "article": "LAS §38",
+        "law": "Lagen om anställningsskydd (LAS)",
+        "description": "Non-compete restrictions",
+        "source": "se-labor-law.json"
+      }
+    },
+    {
+      "text": "You are entitled to 11 consecutive hours of daily rest and 36 consecutive hours of weekly rest.",
+      "citation": {
+        "article": "Arbetstidslagen §5",
+        "law": "Arbetstidslagen",
+        "description": "Working hours and rest",
+        "source": "se-labor-law.json"
+      }
+    }
+  ],
+  "support": {
+    "name": "Unionen",
+    "url": "https://www.unionen.se/in-english",
+    "description": "Sweden's largest white-collar union — free advice for members"
+  }
+}

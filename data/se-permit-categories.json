@@ -1,0 +1,30 @@
+{
+  "jurisdiction": "se",
+  "source": "se-permit-categories.json",
+  "permits": [
+    {
+      "id": "arbetstillstand",
+      "name": "Arbetstillstånd",
+      "authority": "Migrationsverket",
+      "conditions": {
+        "maxHoursPerWeek": null,
+        "sectorRestrictions": "Tied to the employer and occupation listed on the permit for the first 24 months",
+        "locationRestrictions": "Sweden only",
+        "salaryMinimum": "Must meet Migrationsverket maintenance requirement (currently SEK 27,360/month or above CBA / industry practice)"
+      },
+      "source": "se-permit-categories.json"
+    },
+    {
+      "id": "eu-blue-card-se",
+      "name": "EU Blue Card (Sweden)",
+      "authority": "Migrationsverket",
+      "conditions": {
+        "maxHoursPerWeek": null,
+        "sectorRestrictions": "Highly qualified roles only (university degree or 5+ years' experience)",
+        "locationRestrictions": "Sweden; intra-EU mobility after 12 months",
+        "salaryMinimum": "1.5× average gross annual salary in Sweden"
+      },
+      "source": "se-permit-categories.json"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+SAMPLE EMPLOYMENT CONTRACT — FOR TESTING ONLY (CLEAN STATE)
+
+Between: Acme Logistics B.V. ("Employer")
+And:    [Worker Name] ("Employee")
+Date:   1 March 2026
+
+The Employer and the Employee agree as follows.
+
+1. NON-COMPETE
+   No non-compete clause applies. The Employee is free to take up
+   any role with any employer after termination.
+
+2. PROBATION PERIOD
+   The Employee is engaged on an indefinite-term contract with a
+   probation period of 1 month from the start date, agreed in writing.
+
+3. NOTICE PERIOD
+   The Employer shall provide 2 months written notice; the Employee
+   shall provide 1 month written notice. Notice takes effect at the
+   end of the calendar month.
+
+4. OVERTIME
+   Overtime, when required, is compensated at 125% of the base hourly
+   rate and is capped at 8 additional hours per week, well within
+   Arbeidstijdenwet limits averaged over the reference period.
+
+5. WORKING HOURS
+   Standard working time is 40 hours per week, Monday to Friday.
+   The Employee is entitled to 11 consecutive hours of daily rest
+   and 36 consecutive hours of weekly rest.
+
+6. WORK-FROM-HOME POLICY
+   The Employer provides a laptop and ergonomic equipment.
+   Utilities are reimbursed at €40 per month.
+
+Signed at Amsterdam.
+
+[signatures redacted — sample document]

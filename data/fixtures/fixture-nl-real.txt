@@ -1,0 +1,39 @@
+SAMPLE EMPLOYMENT CONTRACT — FOR TESTING ONLY
+
+Between: Acme Logistics B.V. ("Employer")
+And:    [Worker Name] ("Employee")
+Date:   1 March 2026
+
+The Employer and the Employee agree as follows.
+
+1. NON-COMPETE
+   The Employee agrees not to work in a similar role for any
+   competitor within the European Union for a period of 24 months
+   after termination of this agreement, without compensation.
+
+2. PROBATION PERIOD
+   The Employee is engaged on a 1-year fixed-term contract subject
+   to a probation period of 3 months from the start date.
+
+3. NOTICE PERIOD
+   Either party may terminate this agreement by providing 1 month
+   written notice, to take effect at the end of the calendar month.
+
+4. OVERTIME
+   The Employee may be required to work up to 45 hours per week
+   during busy periods, in line with the Arbeidstijdenwet ceilings
+   averaged over the relevant reference period.
+
+5. CONFIDENTIALITY
+   The Employee shall not disclose any confidential information
+   belonging to the Employer to third parties for a period of 2
+   years following termination of this agreement.
+
+6. WORK-FROM-HOME POLICY
+   When working from home, the Employee provides their own
+   equipment. The Employer reimburses €30 per month towards
+   utilities, payable monthly with salary.
+
+Signed at Amsterdam.
+
+[signatures redacted — sample document]
