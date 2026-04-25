@@ -142,9 +142,6 @@ require_secret() {
 }
 
 require_secret ANTHROPIC_API_KEY
-require_secret VERCEL_TOKEN
-require_secret VERCEL_ORG_ID
-require_secret VERCEL_PROJECT_ID
 
 # ----- §8. App health -----
 section "8. App health (npm run check)"

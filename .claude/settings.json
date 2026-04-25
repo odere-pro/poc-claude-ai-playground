@@ -49,6 +49,8 @@
       "Bash(aws s3 rm:*)",
       "Bash(aws s3api delete:*)",
       "Bash(aws iam:*)",
+      "Bash(vercel remove:*)",
+      "Bash(vercel env rm:*)",
       "Read(.env)",
       "Read(.env.local)",
       "Read(.env.*.local)",
