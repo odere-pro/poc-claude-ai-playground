@@ -4,7 +4,7 @@ import { enforceCitation } from "@/lib/citationValidator";
 import { buildAnalysisPrompt } from "@/lib/prompts";
 import { rateLimit } from "@/lib/rateLimit";
 import { analyzeRequestSchema, clauseEventSchema, summaryEventSchema } from "@/lib/schemas";
-import { checkEntitlement, reportUsage } from "@/lib/solvimon";
+import { checkEntitlement, reportUsage, type UsageMetadata } from "@/lib/solvimon";
 import type { Jurisdiction, Ruleset, StreamEvent, SummaryEvent } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const parsed = analyzeRequestSchema.safeParse(body);
   if (!parsed.success) {
-    const tooLarge = parsed.error.issues.some((i) => i.message.includes("100KB"));
+    const tooLarge = parsed.error.issues.some((i) => i.message.includes("500KB"));
     return jsonError(tooLarge ? 413 : 400, tooLarge ? "Contract too large" : "Invalid request");
   }
   const { contractText, permitType, jurisdiction, detectedLanguage, customerId } = parsed.data;
@@ -80,6 +80,16 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Soft-fail entitlement check. Only an explicit deny blocks the user.
   const entitlement = await checkEntitlement(customerId);
   if (!entitlement.allowed) {
+    if (entitlement.rateLimited) {
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (entitlement.retryAfterSec !== undefined) {
+        headers["Retry-After"] = String(entitlement.retryAfterSec);
+      }
+      return new Response(
+        JSON.stringify({ error: "Service temporarily unavailable. Please try again shortly." }),
+        { status: 503, headers },
+      );
+    }
     return new Response(
       JSON.stringify({
         error: "Analysis limit reached. Upgrade your plan.",
@@ -236,8 +246,15 @@ export async function POST(req: NextRequest): Promise<Response> {
         controller.enqueue(done());
         controller.close();
 
-        // Best-effort usage report.
-        void reportUsage(customerId);
+        // Best-effort usage report with enriched metadata.
+        const usageMeta: UsageMetadata = {
+          jurisdiction,
+          permitType,
+          contractSizeKb: Math.round(new TextEncoder().encode(contractText).byteLength / 1024),
+          illegalCount: counts.illegal,
+          exploitativeCount: counts.exploitative,
+        };
+        void reportUsage(customerId, usageMeta);
       } catch {
         // Don't echo the upstream error — could leak prompt or model details.
         controller.enqueue(ENCODER.encode(`event: error\ndata: {"error":"upstream_failed"}\n\n`));

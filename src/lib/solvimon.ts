@@ -3,7 +3,9 @@
  *
  * Soft-fail policy: if Solvimon is down or slow, the user must still be able
  * to analyze their contract. `checkEntitlement` returns `{ allowed: true }`
- * on any error/timeout. `reportUsage` is fire-and-forget.
+ * on any error/timeout EXCEPT a genuine 429, which means our API key is
+ * rate-limited — we must deny rather than silently grant free access.
+ * `reportUsage` is fire-and-forget.
  *
  * The 3s timeout is intentional — Solvimon should not be on the hot path.
  */
@@ -15,6 +17,22 @@ export interface EntitlementResult {
   readonly allowed: boolean;
   /** Where to redirect the user when blocked. Solvimon-issued. */
   readonly checkoutUrl?: string;
+  /** True when Solvimon rate-limited our API key (HTTP 429). */
+  readonly rateLimited?: boolean;
+  /** Seconds until the rate limit resets, parsed from Retry-After header. */
+  readonly retryAfterSec?: number;
+}
+
+export interface UsageMetadata {
+  readonly jurisdiction?: string;
+  readonly permitType?: string;
+  readonly contractSizeKb?: number;
+  readonly illegalCount?: number;
+  readonly exploitativeCount?: number;
+}
+
+export interface CustomerResult {
+  readonly customerId: string;
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
@@ -31,6 +49,14 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
       },
     );
   });
+}
+
+function parseRetryAfter(value: string): number | undefined {
+  const asInt = parseInt(value, 10);
+  if (!isNaN(asInt) && asInt >= 0) return asInt;
+  const asDate = Date.parse(value);
+  if (!isNaN(asDate)) return Math.max(0, Math.round((asDate - Date.now()) / 1000));
+  return undefined;
 }
 
 export async function checkEntitlement(customerId: string | undefined): Promise<EntitlementResult> {
@@ -50,7 +76,19 @@ export async function checkEntitlement(customerId: string | undefined): Promise<
       }),
       TIMEOUT_MS,
     );
-    if (!res.ok) return { allowed: true };
+
+    // 429 = our API key is rate-limited by Solvimon. Do NOT soft-fail to
+    // allowed here — that would be a billing leak. Return denied + metadata.
+    if (res.status === 429) {
+      const ra = res.headers.get("Retry-After");
+      return {
+        allowed: false,
+        rateLimited: true,
+        retryAfterSec: ra ? parseRetryAfter(ra) : undefined,
+      };
+    }
+
+    if (!res.ok) return { allowed: true }; // soft-fail on 5xx/4xx to preserve availability
     const body = (await res.json()) as { allowed?: unknown; checkoutUrl?: unknown };
     // Soft-fail policy: only an explicit boolean true grants access. A null,
     // missing, 0, or non-boolean response from Solvimon is treated as deny.
@@ -64,7 +102,10 @@ export async function checkEntitlement(customerId: string | undefined): Promise<
   }
 }
 
-export async function reportUsage(customerId: string | undefined): Promise<void> {
+export async function reportUsage(
+  customerId: string | undefined,
+  metadata?: UsageMetadata,
+): Promise<void> {
   if (!customerId) return;
   const apiKey = process.env.SOLVIMON_API_KEY;
   if (!apiKey) return;
@@ -77,7 +118,12 @@ export async function reportUsage(customerId: string | undefined): Promise<void>
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ customerId, event: "analysis", quantity: 1 }),
+        body: JSON.stringify({
+          customerId,
+          event: "analysis",
+          quantity: 1,
+          metadata: metadata ?? {},
+        }),
       }),
       TIMEOUT_MS,
     );
@@ -86,4 +132,52 @@ export async function reportUsage(customerId: string | undefined): Promise<void>
   }
 }
 
-export const __test__ = { TIMEOUT_MS, BASE_URL };
+/**
+ * Look up an existing Solvimon customer by externalId; create one if absent.
+ * Returns null on any error (soft-fail). Intended for use in a session/auth
+ * layer — not on the hot path of every analysis request.
+ */
+export async function createOrRetrieveCustomer(
+  platformId: string,
+  externalId: string,
+): Promise<CustomerResult | null> {
+  const apiKey = process.env.SOLVIMON_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const getRes = await withTimeout(
+      fetch(
+        `${BASE_URL}/customers?platformId=${encodeURIComponent(platformId)}&externalId=${encodeURIComponent(externalId)}`,
+        { headers: { Authorization: `Bearer ${apiKey}` } },
+      ),
+      TIMEOUT_MS,
+    );
+
+    if (getRes.ok) {
+      const body = (await getRes.json()) as { customerId?: unknown };
+      if (typeof body.customerId === "string") return { customerId: body.customerId };
+    }
+
+    if (getRes.status !== 404) return null;
+
+    const postRes = await withTimeout(
+      fetch(`${BASE_URL}/customers`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ platformId, externalId }),
+      }),
+      TIMEOUT_MS,
+    );
+
+    if (!postRes.ok) return null;
+    const created = (await postRes.json()) as { customerId?: unknown };
+    return typeof created.customerId === "string" ? { customerId: created.customerId } : null;
+  } catch {
+    return null;
+  }
+}
+
+export const __test__ = { TIMEOUT_MS, BASE_URL, parseRetryAfter };

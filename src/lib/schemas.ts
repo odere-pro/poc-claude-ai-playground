@@ -121,7 +121,7 @@ export const analyzeRequestSchema = z.object({
     .string()
     .min(1)
     .refine((s) => utf8ByteLength(s) <= MAX_CONTRACT_BYTES, {
-      message: "contractText exceeds 100KB",
+      message: "contractText exceeds 500KB",
     }),
   permitType: z.string().min(1),
   jurisdiction: jurisdictionSchema,
@@ -229,3 +229,24 @@ export const rulesQuerySchema = z.object({
   type: z.string().min(1),
   jurisdiction: jurisdictionSchema,
 });
+
+// --- Transcription (Reson8) ---
+
+export const MAX_AUDIO_BYTES = 10 * 1024 * 1024; // 10 MB
+
+export const transcribeContextSchema = z.object({
+  jurisdiction: jurisdictionSchema,
+  permitType: z.string().min(1),
+  detectedLanguage: supportedLanguageSchema,
+  /** Legal vocabulary hints extracted from active clause analysis. */
+  vocabulary: z.array(z.string().min(1)).max(200).default([]),
+  /** Short domain prompt to prime the STT model. */
+  prompt: z.string().max(500).default(""),
+});
+export type TranscribeContext = z.infer<typeof transcribeContextSchema>;
+
+export const transcribeResponseSchema = z.object({
+  transcript: z.string(),
+  durationMs: z.number().nonnegative(),
+});
+export type TranscribeResponse = z.infer<typeof transcribeResponseSchema>;
