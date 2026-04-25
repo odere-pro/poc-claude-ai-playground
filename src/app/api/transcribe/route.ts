@@ -1,13 +1,19 @@
 import "server-only";
 import type { NextRequest } from "next/server";
+import { rateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 const RESON8_URL = "https://api.reson8.dev/v1/speech-to-text";
 const DEFAULT_LANGUAGE = "nl-NL";
+const MAX_AUDIO_BYTES = 10 * 1024 * 1024;
 
 export async function POST(req: NextRequest): Promise<Response> {
+  if (!rateLimit(req, "transcribe", { capacity: 30, refillPerSec: 30 / 60 })) {
+    return Response.json({ error: "Too many requests. Slow down." }, { status: 429 });
+  }
+
   if (process.env.NEXT_PUBLIC_VOICE_ENABLED !== "true") {
     return Response.json({ error: "Voice transcription unavailable." }, { status: 503 });
   }
@@ -28,6 +34,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   const audio = form.get("audio");
   if (!(audio instanceof Blob) || audio.size === 0) {
     return Response.json({ error: "Missing audio." }, { status: 400 });
+  }
+  if (audio.size > MAX_AUDIO_BYTES) {
+    return Response.json({ error: "Audio file too large." }, { status: 413 });
   }
 
   const upstream = new FormData();

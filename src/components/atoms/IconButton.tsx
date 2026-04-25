@@ -19,9 +19,9 @@ const SIZE_PX: Record<IconButtonSize, number> = { sm: 32, md: 40, lg: 48 };
 const ICON_PATH: Record<IconName, string> = {
   mic: "/icons/mic.svg",
   wave: "/icons/wave.svg",
-  speak: "/icons/wave.svg",
-  download: "/icons/wave.svg",
-  close: "/icons/wave.svg",
+  speak: "/icons/speak.svg",
+  download: "/icons/download.svg",
+  close: "/icons/close.svg",
 };
 
 const VARIANT_BG: Record<IconButtonVariant, string> = {

@@ -2,7 +2,9 @@ import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import type { NextRequest } from "next/server";
 import { buildVoiceIntentPrompt } from "@/lib/prompts";
-import type { VoiceCommandRequest, VoiceCommandResponse } from "@/lib/types";
+import { rateLimit } from "@/lib/rateLimit";
+import { voiceCommandResponseSchema } from "@/lib/schemas";
+import type { VoiceCommandRequest } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -11,6 +13,10 @@ const MODEL = "claude-sonnet-4-6";
 const MAX_TOKENS = 512;
 
 export async function POST(req: NextRequest): Promise<Response> {
+  if (!rateLimit(req, "voice-command", { capacity: 30, refillPerSec: 30 / 60 })) {
+    return Response.json({ error: "Too many requests. Slow down." }, { status: 429 });
+  }
+
   if (process.env.NEXT_PUBLIC_VOICE_ENABLED !== "true") {
     return Response.json({ error: "Voice commands unavailable." }, { status: 503 });
   }
@@ -45,7 +51,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       throw new Error("Empty model response");
     }
 
-    const parsed = JSON.parse(block.text) as VoiceCommandResponse;
+    const parsed = voiceCommandResponseSchema.parse(JSON.parse(block.text));
     return Response.json(parsed);
   } catch (err) {
     console.error(

@@ -4,6 +4,8 @@ import type { NextRequest } from "next/server";
 import { checkEntitlement, reportUsage } from "@/lib/solvimon";
 import { buildAnalysisPrompt } from "@/lib/prompts";
 import { validateClause } from "@/lib/citationValidator";
+import { rateLimit } from "@/lib/rateLimit";
+import { rulesetSchema, permitCategoriesSchema } from "@/lib/schemas";
 import type {
   AnalyzeRequest,
   ClauseEvent,
@@ -63,7 +65,7 @@ async function loadRuleset(jurisdiction: Jurisdiction): Promise<Ruleset> {
     jurisdiction === "se"
       ? await import("@/../data/se-labor-law.json")
       : await import("@/../data/nl-labor-law.json");
-  return mod.default as unknown as Ruleset;
+  return rulesetSchema.parse(mod.default);
 }
 
 async function loadPermits(jurisdiction: Jurisdiction): Promise<PermitCategories> {
@@ -71,7 +73,7 @@ async function loadPermits(jurisdiction: Jurisdiction): Promise<PermitCategories
     jurisdiction === "se"
       ? await import("@/../data/se-permit-categories.json")
       : await import("@/../data/nl-permit-categories.json");
-  return mod.default as unknown as PermitCategories;
+  return permitCategoriesSchema.parse(mod.default);
 }
 
 function pickPermit(permits: PermitCategories, permitType: string): Permit {
@@ -80,6 +82,10 @@ function pickPermit(permits: PermitCategories, permitType: string): Permit {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  if (!rateLimit(req, "analyze", { capacity: 10, refillPerSec: 10 / 60 })) {
+    return jsonError("Too many requests. Slow down.", 429);
+  }
+
   const url = new URL(req.url);
   if (url.searchParams.get("force_402") === "true") {
     return jsonError("Analysis limit reached. Upgrade your plan.", 402);

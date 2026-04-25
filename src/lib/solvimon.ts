@@ -15,7 +15,10 @@ interface EntitlementResponse {
 }
 
 function headers(): HeadersInit {
-  const apiKey = process.env.SOLVIMON_API_KEY ?? "";
+  const apiKey = process.env.SOLVIMON_API_KEY;
+  if (!apiKey) {
+    throw new Error("SOLVIMON_API_KEY is not configured");
+  }
   return {
     "X-API-KEY": apiKey,
     "Content-Type": "application/json",

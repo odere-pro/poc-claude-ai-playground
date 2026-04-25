@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { ReportProvider } from "@/context/ReportContext";
+import { HtmlAttributesSync } from "@/components/HtmlAttributesSync";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -36,7 +37,10 @@ export default function RootLayout({
       className={`${dmSans.variable} ${playfair.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="bg-background text-foreground flex min-h-full flex-col">
-        <ReportProvider>{children}</ReportProvider>
+        <ReportProvider>
+          <HtmlAttributesSync />
+          {children}
+        </ReportProvider>
       </body>
     </html>
   );

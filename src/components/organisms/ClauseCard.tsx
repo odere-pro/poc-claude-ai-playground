@@ -16,7 +16,9 @@ export function ClauseCard({ clause, language, highlighted }: ClauseCardProps) {
   return (
     <article
       data-testid="clause-card"
+      data-id={clause.id}
       data-status={clause.status}
+      aria-label={`${clause.status} clause: ${clause.title}`}
       className="rounded-lg border p-4 transition-shadow"
       style={{
         backgroundColor: "var(--color-card)",

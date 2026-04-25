@@ -47,7 +47,7 @@ completed; `npm run ship` green; 49 vitest + 11 Playwright (2 skipped) pass.
 - [ ] Deploy preview via `/deploy` (Vercel plugin).
 - [ ] Run the smoke trio against the preview URL:
       `BASE_URL=<preview> npx playwright test tests/e2e/upload.spec.ts \
-     tests/e2e/analyze-stream.spec.ts tests/e2e/error-states.spec.ts`.
+tests/e2e/analyze-stream.spec.ts tests/e2e/error-states.spec.ts`.
 - [ ] Manual walkthrough: upload `fixture-nl-real.pdf` → `/analyzing` →
       `/results` shows 2 illegal + 2 compliant + 2 unchecked, citations
       match `Art. 7:653` etc., reload shows `SessionRestoreBanner`,

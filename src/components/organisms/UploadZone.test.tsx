@@ -7,6 +7,10 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
+vi.mock("@/lib/extractContractText", () => ({
+  extractContractText: vi.fn(async (file: File) => `extracted:${file.name}`),
+}));
+
 const original = process.env.NEXT_PUBLIC_VOICE_ENABLED;
 
 afterEach(() => {
@@ -27,12 +31,14 @@ function makeFile(name: string, type: string, size = 1024): File {
 }
 
 describe("UploadZone", () => {
-  it("enables Analyze when a valid PDF is selected", async () => {
+  it("enables Analyze after a valid PDF is read", async () => {
     renderUploadZone("false");
     const input = screen.getByTestId("file-input") as HTMLInputElement;
     const file = makeFile("contract.pdf", "application/pdf");
     fireEvent.change(input, { target: { files: [file] } });
-    await waitFor(() => expect(screen.getByTestId("analyze-button")).not.toBeDisabled());
+    await waitFor(() => expect(screen.getByTestId("analyze-button")).not.toBeDisabled(), {
+      timeout: 2000,
+    });
   });
 
   it("rejects non-PDF/image files with an inline error", () => {

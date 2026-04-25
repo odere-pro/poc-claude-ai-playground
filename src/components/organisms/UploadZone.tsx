@@ -7,9 +7,16 @@ import { JurisdictionToggle } from "@/components/molecules/JurisdictionToggle";
 import { PermitSelector } from "@/components/molecules/PermitSelector";
 import { UploadTab } from "@/components/molecules/UploadTab";
 import { useReport, useReportDispatch } from "@/context/ReportContext";
+import { extractContractText } from "@/lib/extractContractText";
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
-const ACCEPTED = new Set(["application/pdf", "image/png", "image/jpeg", "image/webp"]);
+const ACCEPTED = new Set([
+  "application/pdf",
+  "text/plain",
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+]);
 
 type Tab = "file" | "text" | "speak";
 
@@ -22,9 +29,11 @@ export function UploadZone() {
   const [tab, setTab] = useState<Tab>("file");
   const [text, setText] = useState("");
   const [fileName, setFileName] = useState<string | null>(null);
+  const [fileContent, setFileContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [extracting, setExtracting] = useState(false);
 
-  const accept = (file: File): boolean => {
+  const accept = async (file: File): Promise<boolean> => {
     if (!ACCEPTED.has(file.type)) {
       setError("We support PDFs and images.");
       return false;
@@ -35,24 +44,37 @@ export function UploadZone() {
     }
     setError(null);
     setFileName(file.name);
-    return true;
+    setExtracting(true);
+    try {
+      const content = await extractContractText(file);
+      setFileContent(content);
+      setExtracting(false);
+      return true;
+    } catch {
+      setError("We could not read this file. Try a different PDF or paste the text.");
+      setExtracting(false);
+      return false;
+    }
   };
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file) accept(file);
+    if (file) void accept(file);
   };
 
   const onPick = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) accept(file);
+    if (file) void accept(file);
   };
 
-  const ready = tab === "text" ? text.trim().length > 0 : fileName !== null;
+  const ready =
+    tab === "text"
+      ? text.trim().length > 0
+      : fileName !== null && fileContent.length > 0 && !extracting;
 
   const onAnalyze = () => {
-    const payload = tab === "text" ? text.trim() : (fileName ?? "");
+    const payload = tab === "text" ? text.trim() : fileContent;
     if (!payload) return;
     dispatch({ type: "SET_CONTRACT_TEXT", payload });
     dispatch({ type: "START_ANALYSIS" });
@@ -97,6 +119,8 @@ export function UploadZone() {
 
       {tab === "file" ? (
         <div
+          role="region"
+          aria-label="Upload contract — drop a PDF here or use the file picker below"
           onDragOver={(e) => e.preventDefault()}
           onDrop={onDrop}
           className="flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed p-10 text-center"
