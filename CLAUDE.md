@@ -6,6 +6,10 @@ Paste your documents → which banks will accept you + what's missing + pre-fill
 
 Next.js 16 App Router + shadcn/ui. API routes at `src/app/api/*` handle document processing via the Anthropic SDK. Vercel deployment.
 
+## Default routing
+
+For any task touching code, tests, or config, FIRST invoke the `full-stack-developer` agent to get a routing plan. Skip only for read-only questions and one-line edits.
+
 ## Available tools — use these, don't reinvent
 
 ### MCP servers (project-scoped, in `.mcp.json`)

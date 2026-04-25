@@ -2,8 +2,17 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "functions": {
-    "src/app/api/**/*.ts": {
-      "maxDuration": 60
+    "src/app/api/extract/route.ts": { "maxDuration": 120 },
+    "src/app/api/match/route.ts": { "maxDuration": 30 }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
     }
-  }
+  ]
 }
