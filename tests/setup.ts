@@ -1,5 +1,10 @@
 import "@testing-library/jest-dom/vitest";
-import { beforeEach } from "vitest";
+import { cleanup } from "@testing-library/react";
+import { afterEach, beforeEach } from "vitest";
+
+afterEach(() => {
+  cleanup();
+});
 
 // Node 25 ships an experimental built-in `localStorage` with no usable
 // methods unless --localstorage-file is set. That shadow breaks
