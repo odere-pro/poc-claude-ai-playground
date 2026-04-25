@@ -46,7 +46,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   const url = new URL(req.url);
 
   // Demo step 11 — short-circuit pricing gate without invoking anything.
-  if (url.searchParams.get("force_402") === "true") {
+  // Gated to non-production environments so a public URL with `?force_402=true`
+  // can't be used to defeat billing on a real deployment.
+  if (process.env.NODE_ENV !== "production" && url.searchParams.get("force_402") === "true") {
     return jsonError(402, "Analysis limit reached. Upgrade your plan.");
   }
 
