@@ -15,14 +15,17 @@
 ## Checklist
 
 - [ ] `npm run check` clean (typecheck + lint + format)
-- [ ] `npm run test:unit` passes
-- [ ] `npm run test:integration` passes (if integration touched)
+- [ ] `npm run build` passes locally
 - [ ] `npm run test:e2e` passes locally OR will run on Vercel preview CI
 - [ ] No `any` types, no non-null assertions without inline reason
+- [ ] No hardcoded colors / fonts in `src/components/**` (use tokens — see `.claude/rules/no-hardcoded-tokens.md`)
 - [ ] No hardcoded secrets, no `console.log` in committed code
-- [ ] No document content logged or persisted server-side
+- [ ] No document content / PII logged or persisted server-side
 - [ ] If touching uploads: MIME allowlist + size cap enforced
-- [ ] If touching `/api/*`: zod schema validates the request body
+- [ ] If touching `/api/*`: input validated, errors don't echo input back
+- [ ] If UI touched: `data-testid` attributes on new interactive elements
+- [ ] If non-obvious bug fixed: entry added to `docs/gotchas.md` (see `.claude/rules/gotchas.md`)
+- [ ] Conventional commit subject (`feat:` / `fix:` / `refactor:` / `docs:` / `test:` / `chore:`)
 
 ## Security review trigger
 

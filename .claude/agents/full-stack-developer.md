@@ -1,6 +1,6 @@
 ---
 name: full-stack-developer
-description: Use PROACTIVELY for any feature spanning UI + API + data on the Bank Readiness Checker (Next.js 16, Anthropic SDK, shadcn), for security-sensitive document-handling changes, and for pre-commit routing decisions. Returns a numbered routing plan naming the specialist subagents and MCP servers the parent session should invoke. Read-only — does not write code.
+description: MUST BE USED for any non-trivial task in this repo. Use PROACTIVELY for any feature spanning UI + API + data on the Bank Readiness Checker (Next.js 16, Anthropic SDK, shadcn), for security-sensitive document-handling changes, and for pre-commit routing decisions. Returns a numbered routing plan naming the specialist subagents and MCP servers the parent session should invoke. Read-only — does not write code. Skip only for read-only questions and one-line edits.
 tools: ["Read", "Grep", "Glob"]
 model: sonnet
 ---

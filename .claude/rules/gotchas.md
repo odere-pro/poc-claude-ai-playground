@@ -19,7 +19,9 @@ Add a new gotcha whenever **all three** hold:
 Do **not** add:
 
 - One-off typos
+- Missing imports
 - Fixes that were obvious from the error message
+- Anything fixed by restarting the dev server
 - Anything already covered by an existing entry — update the existing one instead
 
 ## Format (must match the template in `docs/gotchas.md`)
