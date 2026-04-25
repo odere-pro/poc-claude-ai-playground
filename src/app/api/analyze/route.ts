@@ -11,6 +11,12 @@ export const maxDuration = 120;
 
 const ENCODER = new TextEncoder();
 
+// Hard cap on the upstream-token buffer. Without it, a malformed model
+// response (or adversarial slow-trickle stream) could grow `buffered`
+// unboundedly and OOM the function. 512KB comfortably exceeds the
+// 4096-token max_tokens we ask for.
+const MAX_BUFFER_BYTES = 512 * 1024;
+
 function sse(event: object): Uint8Array {
   return ENCODER.encode(`data: ${JSON.stringify(event)}\n\n`);
 }
@@ -193,6 +199,9 @@ export async function POST(req: NextRequest): Promise<Response> {
         for await (const event of upstream) {
           if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
             buffered += event.delta.text;
+            if (buffered.length > MAX_BUFFER_BYTES) {
+              throw new Error("buffer_overflow");
+            }
             drainBuffer();
           }
         }
