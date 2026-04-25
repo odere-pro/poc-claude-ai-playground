@@ -11,6 +11,12 @@ const eslintConfig = defineConfig([
       "no-console": ["warn", { allow: ["error", "warn"] }],
     },
   },
+  {
+    files: ["scripts/**/*.ts"],
+    rules: {
+      "no-console": "off",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

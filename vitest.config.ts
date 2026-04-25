@@ -5,7 +5,10 @@ import path from "node:path";
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      "server-only": path.resolve(__dirname, "./tests/mocks/server-only-shim.ts"),
+    },
   },
   test: {
     passWithNoTests: true,
@@ -13,11 +16,14 @@ export default defineConfig({
       {
         plugins: [react()],
         resolve: {
-          alias: { "@": path.resolve(__dirname, "./src") },
+          alias: {
+            "@": path.resolve(__dirname, "./src"),
+            "server-only": path.resolve(__dirname, "./tests/mocks/server-only-shim.ts"),
+          },
         },
         test: {
           name: "unit",
-          include: ["src/**/*.test.ts", "tests/unit/**/*.test.ts"],
+          include: ["src/lib/**/*.test.ts", "src/context/**/*.test.ts", "tests/unit/**/*.test.ts"],
           environment: "happy-dom",
           setupFiles: ["./tests/setup.ts"],
         },
@@ -25,11 +31,18 @@ export default defineConfig({
       {
         plugins: [react()],
         resolve: {
-          alias: { "@": path.resolve(__dirname, "./src") },
+          alias: {
+            "@": path.resolve(__dirname, "./src"),
+            "server-only": path.resolve(__dirname, "./tests/mocks/server-only-shim.ts"),
+          },
         },
         test: {
           name: "integration",
-          include: ["src/**/*.test.tsx", "tests/integration/**/*.test.{ts,tsx}"],
+          include: [
+            "src/**/*.test.tsx",
+            "src/app/api/**/*.test.ts",
+            "tests/integration/**/*.test.{ts,tsx}",
+          ],
           environment: "happy-dom",
           setupFiles: ["./tests/setup.ts", "./tests/mocks/setup.ts"],
         },

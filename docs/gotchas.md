@@ -83,6 +83,14 @@ Keep entries small (≤ 8 lines). One gotcha per section. Delete entries older t
 **Fix:** Put `import "server-only";` at the top of any server-only module; refactor the client to call `/api/*` instead of the lib directly.
 **Detect:** `grep -rn "from \"@/lib/anthropic\"" src/` in client components.
 
+### [2026-04-25] Node 25 built-in `localStorage` shadows happy-dom in Vitest
+
+**Area:** typescript / tooling
+**Symptom:** `TypeError: window.localStorage.setItem is not a function` in Vitest tests on Node ≥ 25, even with `environment: "happy-dom"`.
+**Cause:** Node 25 ships an experimental Web Storage on `globalThis.localStorage`. Without `--localstorage-file=<path>` it returns an empty Object that overrides happy-dom's Storage instance. Stderr warns `--localstorage-file was provided without a valid path`.
+**Fix:** In tests that touch localStorage, install a Map-backed `Storage` stub via `Object.defineProperty(window, "localStorage", { value: stub, configurable: true })` in `beforeEach`. See `src/lib/languageDetector.test.ts` for the pattern.
+**Detect:** Test fails with "is not a function" on a Storage method; node version is 22.7+.
+
 ### [2026-04-16] Husky pre-commit fails without `prepare` having run
 
 **Area:** tooling
