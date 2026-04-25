@@ -99,7 +99,6 @@ require_cli node
 require_cli npm
 require_cli git
 require_cli gh
-require_cli vercel
 require_cli d2
 
 
@@ -127,17 +126,8 @@ section "6. GitHub auth"
 gh auth status >/dev/null 2>&1 || fail "gh not authenticated — run: gh auth login"
 ok "gh authenticated"
 
-# ----- §7. Vercel link -----
-section "7. Vercel link"
-
-if [ -f .vercel/project.json ]; then
-  ok ".vercel/project.json present"
-else
-  fail ".vercel/project.json missing — run: vercel link --yes"
-fi
-
-# ----- §8. GitHub Actions secrets -----
-section "8. GitHub Actions secrets"
+# ----- §7. GitHub Actions secrets -----
+section "7. GitHub Actions secrets"
 
 # gh secret list returns lines like "NAME  Updated ...". Just grep names.
 secret_list="$(gh secret list 2>/dev/null || true)"
@@ -156,22 +146,22 @@ require_secret VERCEL_TOKEN
 require_secret VERCEL_ORG_ID
 require_secret VERCEL_PROJECT_ID
 
-# ----- §9. App health -----
-section "9. App health (npm run check)"
+# ----- §8. App health -----
+section "8. App health (npm run check)"
 
 npm run --silent check \
   || fail "npm run check failed — typecheck / lint / format issue. Run: npm run fix"
 ok "npm run check passed"
 
-# ----- §10. Build -----
-section "10. Production build (npm run build)"
+# ----- §9. Build -----
+section "9. Production build (npm run build)"
 
 npm run --silent build \
   || fail "npm run build failed — see output above"
 ok "npm run build passed"
 
-# ----- §11. E2E -----
-section "11. E2E (npm run test:e2e)"
+# ----- §10. E2E -----
+section "10. E2E (npm run test:e2e)"
 
 if [ "${PREFLIGHT_SKIP_E2E:-0}" = "1" ]; then
   warn "PREFLIGHT_SKIP_E2E=1 — skipping Playwright"

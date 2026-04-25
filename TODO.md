@@ -5,6 +5,13 @@ moves the repo from "structurally complete + green CI" to "demo-ready".
 
 ## P0 — required for live demo
 
+- [ ] Configure GitHub → Vercel auto-deploy: import the repo at
+      [vercel.com/new](https://vercel.com/new), confirm Next.js framework
+      preset, add env vars (`ANTHROPIC_API_KEY` + Solvimon/Reson8 keys +
+      `NEXT_PUBLIC_VOICE_ENABLED`) for Production and Preview scopes, then
+      verify a push to a feature branch yields a Preview URL and merge to
+      `main` promotes to Production. No local `vercel` CLI needed once Git
+      integration is in place.
 - [ ] Wire `ANTHROPIC_API_KEY` in Vercel preview + production secrets, then
       run the real `/api/analyze` happy-path against `data/fixtures/fixture-nl-real.txt`
       and confirm streamed clauses + citations in the UI.
@@ -57,6 +64,25 @@ moves the repo from "structurally complete + green CI" to "demo-ready".
 - [ ] Move `force_402` from a query-param to a request header (e.g.
       `X-Demo-Force-402: 1`) so it's invisible to URL-sharing — current fix
       gates it to non-prod, but a header is sturdier across preview deploys.
+
+## P2.5 — tooling validation
+
+- [ ] Smoke-test every project-scoped MCP server end-to-end
+      (`.mcp.json`): `shadcn` (component lookup), `nextjs` (docs query),
+      `playwright` (browser automation), `structurizr` (DSL parse +
+      diagram render), `gemini-image` (image generation). Document any
+      that fail to start or auth in `docs/gotchas.md`.
+- [ ] Test the `gemini-image` MCP path: generate one pitch image from a
+      short prompt, save to `docs/assets/`, confirm the file is a valid
+      PNG/JPG and dimensions match what was requested.
+- [ ] Author a Structurizr DSL workspace under `docs/architecture/` that
+      describes Clauseguard's C4 model (Context + Container + Component
+      for the analyze pipeline). Render to Mermaid via the `structurizr`
+      MCP `export-mermaid` tool and check both the `.dsl` source and the
+      `.mmd` output into the repo.
+- [ ] Generate an HTML pitch deck via the `frontend-slides` skill from
+      `README.md` + `CLAUDE.md` content (problem → demo → architecture →
+      groundedness story). Output to `docs/pitch/` and link from README.
 
 ## P3 — nice-to-haves
 
