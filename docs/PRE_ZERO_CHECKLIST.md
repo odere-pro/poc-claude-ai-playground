@@ -99,7 +99,7 @@ Once these three smoke-test green, the rest of the checklist is agent-assisted.
 ## 4. Accounts (must exist, free tier OK)
 
 - [x] **GitHub** — repo exists, `gh` CLI authenticated
-- [ ] **Vercel** — account + project created (project link happens in §7)
+- [ ] **Vercel** — account + project created via GitHub import at https://vercel.com/new (handles deploys via Git integration; no local CLI required — see §7)
 - [ ] **Anthropic** — account + API key (hackathon credits if provided)
 - [!] **Google AI Studio** — `GEMINI_API_KEY` (only if gemini-image MCP stays in)
 - [!] **Sentry** — add during polish, not pre-zero
@@ -112,11 +112,10 @@ node --version       # v20+ (CI uses v22)
 npm --version        # >= 10
 git --version
 gh --version && gh auth status
-vercel --version || npm i -g vercel
 d2 --version
 ```
 
-Current state: `node`, `npm`, `git`, `gh`, `d2`, `@marp-team/marp-cli` (via npx) all in place. Only `vercel` CLI is expected to be missing — install when running the checklist.
+Current state: `node`, `npm`, `git`, `gh`, `d2`, `@marp-team/marp-cli` (via npx) all in place. Vercel CLI is **not** required — deploys run via the GitHub integration set up in §7. Install globally (`npm i -g vercel`) only if you need `vercel logs` from the terminal.
 
 ## 6. Secrets & env
 
@@ -127,39 +126,46 @@ cp .env.example .env.local
 # edit: set ANTHROPIC_API_KEY (+ GEMINI_API_KEY if §3 needs it)
 ```
 
-**Vercel dashboard (Production + Preview):**
+**Vercel dashboard (Production + Preview)** — set via web UI under _Project → Settings → Environment Variables_, or during the import flow in §7. Add `ANTHROPIC_API_KEY` (and `GEMINI_API_KEY` if in scope) to both _Production_ and _Preview_ scopes.
 
-```bash
-vercel env add ANTHROPIC_API_KEY production preview
-# repeat for GEMINI_API_KEY if in scope
-```
-
-**GitHub Actions secrets** (used by `.github/workflows/ci.yml` and `deploy.yml`):
+**GitHub Actions secrets** (used by `.github/workflows/ci.yml`):
 
 ```bash
 gh secret set ANTHROPIC_API_KEY --body "<value>"
-gh secret set VERCEL_TOKEN --body "<value>"
-gh secret set VERCEL_ORG_ID --body "<value>"
-gh secret set VERCEL_PROJECT_ID --body "<value>"
 gh secret list
 ```
 
+`VERCEL_TOKEN` / `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` are **not** needed — neither workflow runs `vercel deploy` directly; deploys are triggered by Vercel's Git integration, and `preview-e2e.yml` reads `target_url` from the `deployment_status` webhook.
+
 After this, restart Claude Code. The `.claude/hooks/session-start.sh` warning about missing `.env.local` / `ANTHROPIC_API_KEY` should disappear.
 
-## 7. Vercel link + first deploy
+## 7. Vercel project (GitHub integration) + first deploy
 
-```bash
-vercel link --yes              # creates .vercel/project.json (gitignored)
-vercel env pull .env.local     # sync any dashboard-only vars locally
-```
+One-time setup via the Vercel web UI:
 
-Then from Claude Code invoke `/deploy` (Vercel plugin from §2). Fallback: `vercel --prod` in the shell. Either returns a preview URL.
+1. Open https://vercel.com/new and import this GitHub repo.
+2. Confirm the auto-detected framework preset (Next.js) and build settings (`next build`, install `npm install`, output `.next`).
+3. Add env vars in the import screen (or later under _Project → Settings → Environment Variables_):
+   - `ANTHROPIC_API_KEY` — Production + Preview
+   - `GEMINI_API_KEY` — only if §3 keeps gemini-image
+   - `NEXT_PUBLIC_VOICE_ENABLED` — set to enable the voice flow
+4. Click **Deploy**. Vercel returns a Production URL and starts auto-building Preview URLs on every push.
+
+After this, the deploy contract is:
+
+| Git event              | Vercel result                   |
+| ---------------------- | ------------------------------- |
+| Push to feature branch | Preview deployment + URL        |
+| Open PR to `main`      | Preview URL commented on the PR |
+| Merge to `main`        | Production deployment promoted  |
 
 Smoke:
 
 ```bash
 curl -I <preview-url>          # 200 OK
 ```
+
+No local `vercel` CLI is required for any of this. From Claude Code, `/deploy` (Vercel plugin from §2) and `/vercel-logs` continue to work via the Claude plugin's own auth — they do not depend on the npm `vercel` CLI being installed locally.
 
 ## 8. CI smoke test on throwaway branch
 
