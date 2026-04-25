@@ -1,0 +1,34 @@
+{
+  "jurisdiction": "se",
+  "source": "se-labor-law.json",
+  "rules": [
+    {
+      "id": "se-las-6",
+      "article": "LAS § 6",
+      "label": "Trial period (provanställning)",
+      "summary": "Trial employment may not exceed 6 months. After that, the employment converts to indefinite (tillsvidareanställning) unless explicitly terminated.",
+      "tags": ["trial-period", "probation"]
+    },
+    {
+      "id": "se-las-11",
+      "article": "LAS § 11",
+      "label": "Notice period (uppsägningstid)",
+      "summary": "Minimum statutory notice period scales with length of service: 1 month under 2 years, up to 6 months at 10+ years. Cannot be reduced below this floor by contract.",
+      "tags": ["notice", "termination"]
+    },
+    {
+      "id": "se-las-38",
+      "article": "LAS § 38",
+      "label": "Damages for invalid termination",
+      "summary": "An employer who terminates without saklig grund (just cause) is liable for general damages and lost wages, regardless of any waiver in the contract.",
+      "tags": ["termination", "damages"]
+    },
+    {
+      "id": "se-arbetstidslagen-5",
+      "article": "Arbetstidslagen § 5",
+      "label": "Maximum working hours",
+      "summary": "Regular working time is at most 40 hours per week. Overtime is capped at 200 hours per year. Mandatory daily rest of 11 consecutive hours.",
+      "tags": ["working-hours", "overtime", "rest"]
+    }
+  ]
+}

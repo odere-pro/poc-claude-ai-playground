@@ -1,0 +1,48 @@
+/* Clauseguard design tokens.
+ *
+ * Status colors are OKLch for predictable contrast across light/dark modes.
+ * Components reference these via var(--token), never via hardcoded values.
+ * Imported once from src/app/globals.css and layered on top of shadcn primitives.
+ */
+
+:root {
+  /* Status colors — paired (text + background) per clause status. */
+  --color-status-illegal: oklch(0.5 0.21 25);
+  --color-status-illegal-bg: oklch(0.96 0.04 25);
+  --color-status-exploitative: oklch(0.55 0.18 60);
+  --color-status-exploitative-bg: oklch(0.96 0.05 60);
+  --color-status-compliant: oklch(0.45 0.15 145);
+  --color-status-compliant-bg: oklch(0.96 0.05 145);
+  --color-status-permit_conflict: oklch(0.5 0.18 320);
+  --color-status-permit_conflict-bg: oklch(0.96 0.04 320);
+  --color-status-unchecked: oklch(0.55 0.02 250);
+  --color-status-unchecked-bg: oklch(0.96 0.005 250);
+
+  /* Clause + report typography. clamp() gives fluid scale without media queries. */
+  --text-clause-title: clamp(1.05rem, 0.95rem + 0.4vw, 1.25rem);
+  --text-clause-body: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+  --text-summary-headline: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  --text-hero: clamp(2rem, 1.4rem + 2.4vw, 3.75rem);
+
+  /* Spacing rhythm specific to results layout. */
+  --space-clause: clamp(1rem, 0.85rem + 0.6vw, 1.5rem);
+  --space-section: clamp(2rem, 1.5rem + 2vw, 4rem);
+
+  /* Motion. */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark {
+  --color-status-illegal: oklch(0.72 0.18 25);
+  --color-status-illegal-bg: oklch(0.25 0.06 25);
+  --color-status-exploitative: oklch(0.78 0.16 60);
+  --color-status-exploitative-bg: oklch(0.25 0.06 60);
+  --color-status-compliant: oklch(0.78 0.14 145);
+  --color-status-compliant-bg: oklch(0.25 0.05 145);
+  --color-status-permit_conflict: oklch(0.75 0.15 320);
+  --color-status-permit_conflict-bg: oklch(0.25 0.05 320);
+  --color-status-unchecked: oklch(0.7 0.02 250);
+  --color-status-unchecked-bg: oklch(0.25 0.005 250);
+}

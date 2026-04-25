@@ -1,88 +1,114 @@
 import { describe, it, expect } from "vitest";
-import { ExtractRequestSchema, MatchRequestSchema } from "./schemas";
+import {
+  analyzeRequestSchema,
+  clauseEventSchema,
+  summaryEventSchema,
+  voiceCommandRequestSchema,
+  MAX_CONTRACT_BYTES,
+} from "./schemas";
 
-describe("ExtractRequestSchema", () => {
-  it("accepts a single-file payload with no permit", () => {
-    const result = ExtractRequestSchema.safeParse({
-      files: [
-        {
-          name: "passport.pdf",
-          mimeType: "application/pdf",
-          sizeBytes: 1024,
-          contentBase64: "JVBERi0=",
-        },
-      ],
-    });
-    expect(result.success).toBe(true);
+describe("analyzeRequestSchema", () => {
+  const valid = {
+    contractText: "Sample clause.",
+    permitType: "gvva",
+    jurisdiction: "nl",
+    detectedLanguage: "en",
+  };
+
+  it("accepts a valid request", () => {
+    expect(analyzeRequestSchema.parse(valid)).toMatchObject(valid);
   });
 
-  it("rejects an empty files array", () => {
-    const result = ExtractRequestSchema.safeParse({ files: [] });
-    expect(result.success).toBe(false);
+  it("rejects empty contractText", () => {
+    expect(() => analyzeRequestSchema.parse({ ...valid, contractText: "" })).toThrow();
   });
 
-  it("rejects more than 10 files", () => {
-    const file = {
-      name: "doc.pdf",
-      mimeType: "application/pdf",
-      sizeBytes: 1,
-      contentBase64: "x",
-    };
-    const result = ExtractRequestSchema.safeParse({
-      files: Array(11).fill(file),
-    });
-    expect(result.success).toBe(false);
+  it("rejects contractText > 100KB", () => {
+    const bigText = "x".repeat(MAX_CONTRACT_BYTES + 1);
+    expect(() => analyzeRequestSchema.parse({ ...valid, contractText: bigText })).toThrow();
   });
 
-  it("rejects non-positive size", () => {
-    const result = ExtractRequestSchema.safeParse({
-      files: [
-        {
-          name: "doc.pdf",
-          mimeType: "application/pdf",
-          sizeBytes: 0,
-          contentBase64: "x",
-        },
-      ],
-    });
-    expect(result.success).toBe(false);
+  it("rejects unknown jurisdiction", () => {
+    expect(() => analyzeRequestSchema.parse({ ...valid, jurisdiction: "fr" })).toThrow();
+  });
+
+  it("rejects unknown language", () => {
+    expect(() => analyzeRequestSchema.parse({ ...valid, detectedLanguage: "xx" })).toThrow();
+  });
+
+  it("accepts optional customerId", () => {
+    const withCustomer = { ...valid, customerId: "cus_123" };
+    expect(analyzeRequestSchema.parse(withCustomer)).toMatchObject(withCustomer);
   });
 });
 
-describe("MatchRequestSchema", () => {
-  const validDoc = {
-    type: "passport",
-    fields: { number: "AB123", expires: "2030-01-01" },
-    confidence: 0.95,
-  };
-
-  it("accepts a request with one document and a permit type", () => {
-    const result = MatchRequestSchema.safeParse({
-      documents: [validDoc],
-      permitType: "gvva",
-    });
-    expect(result.success).toBe(true);
+describe("clauseEventSchema", () => {
+  it("accepts a valid clause event", () => {
+    const event = {
+      type: "clause",
+      id: "c1",
+      title: "Non-compete",
+      status: "illegal",
+      originalText: "...",
+      explanation: "...",
+      citation: { article: "BW 7:653", label: "Non-compete", source: "nl-labor-law.json" },
+      action: null,
+      permitConflict: null,
+    };
+    expect(clauseEventSchema.parse(event)).toMatchObject(event);
   });
 
-  it("rejects when permitType is missing", () => {
-    const result = MatchRequestSchema.safeParse({ documents: [validDoc] });
-    expect(result.success).toBe(false);
+  it("requires nullable fields to be present (not undefined)", () => {
+    expect(() =>
+      clauseEventSchema.parse({
+        type: "clause",
+        id: "c1",
+        title: "x",
+        status: "compliant",
+        originalText: "",
+        explanation: "",
+        citation: null,
+        action: null,
+        // permitConflict missing
+      }),
+    ).toThrow();
+  });
+});
+
+describe("summaryEventSchema", () => {
+  it("accepts a valid summary", () => {
+    const summary = {
+      type: "summary",
+      jurisdiction: "nl",
+      permitType: "gvva",
+      detectedLanguage: "en",
+      totalClauses: 6,
+      illegalCount: 2,
+      exploitativeCount: 0,
+      permitConflictCount: 0,
+      uncheckedCount: 2,
+      compliantCount: 2,
+      rights: [],
+    };
+    expect(summaryEventSchema.parse(summary)).toMatchObject(summary);
+  });
+});
+
+describe("voiceCommandRequestSchema", () => {
+  it("accepts a valid voice command", () => {
+    const cmd = {
+      transcript: "next clause",
+      reportContext: { currentClauseId: "c1", clauseIds: ["c1", "c2"], jurisdiction: "nl" },
+    };
+    expect(voiceCommandRequestSchema.parse(cmd)).toMatchObject(cmd);
   });
 
-  it("rejects confidence outside [0, 1]", () => {
-    const result = MatchRequestSchema.safeParse({
-      documents: [{ ...validDoc, confidence: 1.5 }],
-      permitType: "gvva",
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("accepts an optional banks filter list", () => {
-    const result = MatchRequestSchema.safeParse({
-      documents: [validDoc],
-      permitType: "gvva",
-      banks: ["ING", "ABN AMRO"],
-    });
-    expect(result.success).toBe(true);
+  it("rejects transcripts over 2000 chars", () => {
+    expect(() =>
+      voiceCommandRequestSchema.parse({
+        transcript: "x".repeat(2001),
+        reportContext: { currentClauseId: null, clauseIds: [], jurisdiction: "nl" },
+      }),
+    ).toThrow();
   });
 });

@@ -1,58 +1,84 @@
 import { describe, it, expect } from "vitest";
-import type { BankRules } from "./types";
-import { validateCitation } from "./citationValidator";
+import { enforceCitation, validateClause } from "./citationValidator";
+import type { ClauseEvent, Ruleset } from "./types";
 
-const rules: BankRules = {
-  bank: "ING",
-  accepted_permits: ["gvva", "kennismigrant"],
-  required_documents: {
-    always: ["passport", "bsn"],
-    employment: ["employment_contract"],
-    conditional: { renting: ["rental_contract"] },
-  },
-  online_application: true,
+const ruleset: Ruleset = {
+  jurisdiction: "nl",
+  source: "nl-labor-law.json",
+  rules: [
+    { id: "r1", article: "BW 7:653", label: "Non-compete", summary: "...", tags: [] },
+    { id: "r2", article: "BW 7:652", label: "Trial period", summary: "...", tags: [] },
+  ],
 };
 
-describe("validateCitation", () => {
-  it("accepts a citation that names the bank, an accepted permit, and a known document", () => {
-    const result = validateCitation(
-      { bank: "ING", permitType: "gvva", documentType: "passport" },
-      rules,
-    );
-    expect(result).toEqual({ valid: true });
+const baseClause = (overrides: Partial<ClauseEvent> = {}): ClauseEvent => ({
+  type: "clause",
+  id: "c1",
+  title: "Non-compete",
+  status: "illegal",
+  originalText: "",
+  explanation: "",
+  citation: { article: "BW 7:653", label: "Non-compete", source: "nl-labor-law.json" },
+  action: null,
+  permitConflict: null,
+  ...overrides,
+});
+
+describe("validateClause", () => {
+  it("accepts a flagged clause with a real citation in the matching ruleset", () => {
+    expect(validateClause(baseClause(), ruleset)).toEqual({ ok: true });
   });
 
-  it("accepts citations with only a bank match (no specific claims)", () => {
-    expect(validateCitation({ bank: "ING" }, rules)).toEqual({ valid: true });
+  it("flags a missing citation on a non-unchecked clause", () => {
+    const clause = baseClause({ citation: null });
+    expect(validateClause(clause, ruleset)).toEqual({ ok: false, reason: "missing_citation" });
   });
 
-  it("accepts a conditional document type", () => {
-    const result = validateCitation({ bank: "ING", documentType: "rental_contract" }, rules);
-    expect(result.valid).toBe(true);
+  it("flags a citation with the wrong source filename", () => {
+    const clause = baseClause({
+      citation: { article: "BW 7:653", label: "x", source: "se-labor-law.json" },
+    });
+    expect(validateClause(clause, ruleset)).toEqual({ ok: false, reason: "wrong_source" });
   });
 
-  it("rejects when the bank name does not match the loaded ruleset", () => {
-    const result = validateCitation(
-      { bank: "DeutscheBank Netherlands", documentType: "passport" },
-      rules,
-    );
-    expect(result.valid).toBe(false);
-    if (!result.valid) expect(result.reason).toBe("unknown_bank");
+  it("flags a hallucinated article not present in the ruleset", () => {
+    const clause = baseClause({
+      citation: { article: "BW 9:999", label: "Fake", source: "nl-labor-law.json" },
+    });
+    expect(validateClause(clause, ruleset)).toEqual({ ok: false, reason: "unknown_article" });
   });
 
-  it("rejects an unsupported permit", () => {
-    const result = validateCitation({ bank: "ING", permitType: "tourist_visa" }, rules);
-    expect(result.valid).toBe(false);
-    if (!result.valid) expect(result.reason).toBe("permit_not_accepted");
+  it("passes unchecked clauses without inspecting citation", () => {
+    const clause = baseClause({ status: "unchecked", citation: null });
+    expect(validateClause(clause, ruleset)).toEqual({ ok: true });
   });
 
-  it("rejects an unknown document type", () => {
-    const result = validateCitation({ bank: "ING", documentType: "schengen_receipt" }, rules);
-    expect(result.valid).toBe(false);
-    if (!result.valid) expect(result.reason).toBe("document_not_required");
+  it("passes compliant clauses without inspecting citation", () => {
+    const clause = baseClause({ status: "compliant", citation: null });
+    expect(validateClause(clause, ruleset)).toEqual({ ok: true });
+  });
+});
+
+describe("enforceCitation", () => {
+  it("returns the clause unchanged when valid", () => {
+    const clause = baseClause();
+    expect(enforceCitation(clause, ruleset)).toBe(clause);
   });
 
-  it("matches the bank name case-insensitively", () => {
-    expect(validateCitation({ bank: "ing", documentType: "passport" }, rules).valid).toBe(true);
+  it("downgrades to unchecked and strips the bad citation when invalid", () => {
+    const clause = baseClause({
+      citation: { article: "BW 9:999", label: "Fake", source: "nl-labor-law.json" },
+    });
+    const out = enforceCitation(clause, ruleset);
+    expect(out.status).toBe("unchecked");
+    expect(out.citation).toBeNull();
+    expect(out.id).toBe(clause.id);
+    expect(out.originalText).toBe(clause.originalText);
+  });
+
+  it("preserves clause identity (id, originalText) when downgrading", () => {
+    const clause = baseClause({ citation: null, originalText: "raw text here" });
+    const out = enforceCitation(clause, ruleset);
+    expect(out.originalText).toBe("raw text here");
   });
 });

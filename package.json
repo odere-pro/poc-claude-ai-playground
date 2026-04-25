@@ -1,5 +1,5 @@
 {
-  "name": "bank-readiness-checker",
+  "name": "clauseguard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,7 +11,10 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run typecheck && npm run lint && npm run format:check",
+    "guard:tokens": "node scripts/guard-tokens.mjs",
+    "guard:citation": "node scripts/guard-citation.mjs",
+    "guard": "npm run guard:tokens && npm run guard:citation",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run guard",
     "fix": "npm run lint:fix && npm run format",
     "test": "vitest run",
     "test:watch": "vitest",
