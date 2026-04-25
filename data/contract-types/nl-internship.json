@@ -1,0 +1,21 @@
+{
+  "id": "nl-internship",
+  "title": "Internship (stageovereenkomst)",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-working-hours",
+    "nl-minimum-wage",
+    "nl-leave-waiver",
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "parties",                "description": "Names of the intern, the employer/host organisation, and the educational institution" },
+    { "id": "internship-period",      "description": "Start and end dates of the internship" },
+    { "id": "educational-institution","description": "Name of the school or university and the degree programme" },
+    { "id": "learning-objectives",    "description": "Learning goals and competencies the intern is expected to develop" },
+    { "id": "supervision",            "description": "Name or role of the workplace supervisor responsible for the intern" },
+    { "id": "reimbursement",          "description": "Internship allowance (stagevergoeding) amount, or explicit statement that no allowance is paid. Note: genuine curricular internships are exempt from minimum wage, but payment below minimum wage for non-curricular interns is illegal." },
+    { "id": "working-hours",          "description": "Expected weekly hours (must not exceed regular working hours)" }
+  ],
+  "red_flag_ids": ["below_minimum_wage"]
+}

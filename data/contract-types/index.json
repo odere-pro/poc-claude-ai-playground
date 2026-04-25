@@ -1,0 +1,87 @@
+[
+  {
+    "id": "nl-indefinite",
+    "title": "Standard indefinite employment",
+    "jurisdiction": "nl",
+    "files": [
+      "Employment Contract.pdf",
+      "Employment Contract (1).pdf",
+      "Employment Contract (2).pdf",
+      "Employment Contract (3).pdf",
+      "Employment Contract (4).pdf",
+      "Employment Contract (5).pdf"
+    ]
+  },
+  {
+    "id": "nl-fixed-term",
+    "title": "Fixed-term employment",
+    "jurisdiction": "nl",
+    "files": ["Fixed-Term Employment Contract.pdf"]
+  },
+  {
+    "id": "nl-hsm",
+    "title": "Highly Skilled Migrant (kennismigrant)",
+    "jurisdiction": "nl",
+    "files": ["Employment Contract - Highly Skilled Migrant.pdf"]
+  },
+  {
+    "id": "nl-seasonal",
+    "title": "Seasonal employment",
+    "jurisdiction": "nl",
+    "files": ["Seasonal Employment Contract.pdf", "Seasonal Employment Contract (1).pdf"]
+  },
+  {
+    "id": "nl-zero-hours",
+    "title": "Zero-hours (oproepcontract)",
+    "jurisdiction": "nl",
+    "files": ["Zero-Hours Employment Contract.pdf", "New Document.pdf"]
+  },
+  {
+    "id": "nl-uitzend",
+    "title": "Temp agency (uitzendovereenkomst)",
+    "jurisdiction": "nl",
+    "files": ["Uitzendovereenkomst (Temporary Agency Employment Contract).pdf"]
+  },
+  {
+    "id": "nl-part-time",
+    "title": "Part-time employment",
+    "jurisdiction": "nl",
+    "files": ["Part-Time Employment Contract.pdf"]
+  },
+  {
+    "id": "nl-internship",
+    "title": "Internship (stageovereenkomst)",
+    "jurisdiction": "nl",
+    "files": ["Internship Agreement.pdf"]
+  },
+  {
+    "id": "nl-contractor",
+    "title": "Freelance / contractor (ZZP)",
+    "jurisdiction": "nl",
+    "files": ["Contractor Agreement.pdf"]
+  },
+  {
+    "id": "nl-remote",
+    "title": "Remote work employment",
+    "jurisdiction": "nl",
+    "files": ["Remote Work Employment Contract.pdf"]
+  },
+  {
+    "id": "nl-international",
+    "title": "International assignment",
+    "jurisdiction": "nl",
+    "files": ["International Assignment Agreement.pdf"]
+  },
+  {
+    "id": "nl-posted-worker",
+    "title": "Posted worker (gedetacheerde werknemer)",
+    "jurisdiction": "nl",
+    "files": ["Posted Worker Agreement.pdf"]
+  },
+  {
+    "id": "nl-placement",
+    "title": "Placement confirmation letter",
+    "jurisdiction": "nl",
+    "files": ["Placement Confirmation Letter.pdf", "Placement Confirmation Letter (1).pdf"]
+  }
+]

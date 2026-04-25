@@ -6,34 +6,39 @@
       "id": "nl-non-compete",
       "article": "BW 7:653",
       "label": "Non-compete clause limits",
-      "summary": "Non-compete is invalid in fixed-term contracts unless the employer demonstrates compelling business interest in writing. Geographic and temporal scope must be reasonable.",
+      "category": "contract-terms",
+      "summary": "Non-compete is invalid in fixed-term contracts unless the employer demonstrates compelling business interest in writing. Geographic and temporal scope must be reasonable. A non-compete lasting more than one year post-employment or covering an entire industry without compensation is unenforceable.",
       "tags": ["non-compete", "post-employment"]
     },
     {
       "id": "nl-trial-period",
       "article": "BW 7:652",
       "label": "Trial period cap",
-      "summary": "Maximum 1 month for contracts under 2 years, maximum 2 months for contracts of 2 years or longer. No trial period in contracts of 6 months or shorter.",
+      "category": "contract-terms",
+      "summary": "Maximum 1 month for contracts under 2 years, maximum 2 months for contracts of 2 years or longer. No trial period in contracts of 6 months or shorter. A second trial period with the same employer for the same role is void.",
       "tags": ["trial-period", "probation"]
     },
     {
       "id": "nl-notice-period",
       "article": "BW 7:672",
       "label": "Statutory notice period",
-      "summary": "Employer notice is at least 1 month, scaling with length of service up to 4 months. Employee notice is 1 month unless contractually extended (max 6 months and reciprocal).",
+      "category": "termination",
+      "summary": "Employer notice is at least 1 month, scaling with length of service up to 4 months. Employee notice is 1 month unless contractually extended (max 6 months and must be reciprocal). Any clause shortening the employer's statutory notice period is void.",
       "tags": ["termination", "notice"]
     },
     {
       "id": "nl-working-hours",
       "article": "Arbeidstijdenwet § 5:7",
       "label": "Maximum working hours",
-      "summary": "Average maximum 48 hours per week over 16 weeks; 12 hours per shift; mandatory rest of 11 consecutive hours per 24 hours. Overrides any clause demanding longer.",
+      "category": "working-hours",
+      "summary": "Average maximum 48 hours per week over 16 weeks; 12 hours per shift; mandatory rest of 11 consecutive hours per 24 hours. Any clause requiring the employee to waive overtime pay or work unlimited hours is unenforceable.",
       "tags": ["working-hours", "overtime", "rest"]
     },
     {
       "id": "nl-instant-dismissal",
       "article": "BW 7:676",
       "label": "Instant dismissal",
+      "category": "termination",
       "summary": "Termination without notice is only valid for urgent cause communicated immediately. Generic 'at-will' termination clauses are unenforceable.",
       "tags": ["termination", "at-will"]
     },
@@ -41,8 +46,81 @@
       "id": "nl-minimum-wage",
       "article": "Wet minimumloon § 7",
       "label": "Statutory minimum wage",
-      "summary": "Compensation must meet or exceed the statutory minimum wage for the worker's age, including holiday allowance (vakantiegeld) of at least 8% of gross annual salary.",
-      "tags": ["wage", "compensation"]
+      "category": "wages",
+      "summary": "Compensation must meet or exceed the statutory minimum wage for the worker's age, including holiday allowance (vakantiegeld) of at least 8% of gross annual salary. Any clause agreeing to a wage below the statutory minimum — regardless of what both parties signed — is automatically void.",
+      "tags": ["wage", "compensation", "minimum-wage"]
+    },
+    {
+      "id": "nl-overtime-waiver",
+      "article": "Wet minimumloon § 7",
+      "label": "Overtime pay waiver",
+      "category": "wages",
+      "summary": "An employee cannot waive the right to overtime compensation where overtime would bring their effective hourly rate below the statutory minimum wage. All-in salary clauses that absorb unlimited overtime hours are unenforceable to the extent they breach minimum wage.",
+      "tags": ["overtime", "wage-waiver", "minimum-wage"]
+    },
+    {
+      "id": "nl-leave-waiver",
+      "article": "BW 7:634",
+      "label": "Annual leave and sick-pay waiver",
+      "category": "leave-and-benefits",
+      "summary": "Every employee is entitled to at least 20 paid leave days per year (4 × weekly working hours). Sick pay must be continued for up to 104 weeks (BW 7:629). Any clause in which the employee waives these statutory entitlements is null and void.",
+      "tags": ["annual-leave", "sick-pay", "waiver"]
+    },
+    {
+      "id": "nl-document-withholding",
+      "article": "Art. 273f Sr",
+      "label": "Passport and identity document withholding",
+      "category": "migrant-rights",
+      "summary": "Retaining an employee's passport, identity documents, or residence permit constitutes a trafficking-related offence under Dutch criminal law (Art. 273f Wetboek van Strafrecht) and is absolutely prohibited. No contractual clause can authorise this.",
+      "tags": ["document-withholding", "trafficking", "migrant", "passport"]
+    },
+    {
+      "id": "nl-recruitment-fee",
+      "article": "WAADI art. 14a",
+      "label": "Recruitment and placement fee deduction",
+      "category": "wages",
+      "summary": "Under the Wet allocatie arbeidskrachten door intermediairs (WAADI art. 14a), intermediaries and employers are prohibited from charging workers recruitment, placement, or introduction fees or deducting such fees from wages. Any clause imposing these costs on the employee is void.",
+      "tags": ["recruitment-fee", "wage-deduction", "migrant", "trafficking"]
+    },
+    {
+      "id": "nl-no-complaint-retaliation",
+      "article": "Wet bescherming klokkenluiders art. 11",
+      "label": "No-complaint and retaliation clause",
+      "category": "complaint-rights",
+      "summary": "Employees have an unconditional right to report labour law violations to the Nederlandse Arbeidsinspectie, IND, or any competent authority. A clause forbidding such reports, or making dismissal the consequence of filing a complaint, is void under the Whistleblower Protection Act and constitutes unlawful retaliation (BW 7:658a).",
+      "tags": ["retaliation", "complaint", "whistleblower", "migrant"]
+    },
+    {
+      "id": "nl-visa-conditional-work",
+      "article": "BW 7:628",
+      "label": "Unpaid work upon visa or permit lapse",
+      "category": "migrant-rights",
+      "summary": "Under BW 7:628, an employer bears the risk of circumstances that prevent work. An employee whose visa or work permit lapses due to the employer's administrative failure is entitled to continued pay. Any clause making the employee's wages conditional on maintaining their own visa status — or requiring them to work unpaid during an administrative permit gap — is void.",
+      "tags": ["visa-conditional", "wage-continuation", "migrant", "permit"]
+    },
+    {
+      "id": "nl-contract-substitution",
+      "article": "Wet arbeid vreemdelingen art. 2",
+      "label": "Contract substitution (visa-only contract)",
+      "category": "migrant-rights",
+      "summary": "Submitting a contract to the IND or other immigration authority that differs from the contract actually enforced constitutes fraud under the Wet arbeid vreemdelingen (Wav). The actual working conditions — not the visa-submission contract — govern the employment relationship. Any clause declaring the visa-submitted contract 'for administrative purposes only' is void and constitutes a criminal offence.",
+      "tags": ["contract-substitution", "visa-fraud", "migrant", "immigration"]
+    },
+    {
+      "id": "nl-unilateral-relocation",
+      "article": "BW 7:611",
+      "label": "Unilateral relocation without compensation",
+      "category": "relocation",
+      "summary": "Under the duty of good employment (goed werkgeverschap, BW 7:611), an employer cannot require an employee to relocate to another city or country without reasonable notice, compensation for relocation costs, and consent where the change is substantial. A clause granting the employer unilateral authority to assign the employee to any location worldwide without additional compensation is unenforceable.",
+      "tags": ["relocation", "mobility", "unilateral", "compensation"]
+    },
+    {
+      "id": "nl-written-statement",
+      "article": "BW 7:655",
+      "label": "Missing mandatory written statement",
+      "category": "contract-terms",
+      "summary": "The employer must provide a written statement of employment conditions (BW 7:655) no later than the first day of work, covering: start date, job description, place of work, gross salary and payment date, working hours, notice period, and applicable CAO. A contract missing these elements is formally defective — the employee can demand the missing information in writing.",
+      "tags": ["mandatory-information", "formal-defect", "written-statement"]
     }
   ]
 }

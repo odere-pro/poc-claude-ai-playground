@@ -3,7 +3,7 @@ interface LogoProps {
 }
 
 export function Logo({ size = 32 }: LogoProps) {
-  // Inline shield-mark SVG. Stroke uses currentColor so it inherits
+  // Inline document-check mark SVG. Stroke uses currentColor so it inherits
   // text color from any parent context (header, footer, splash).
   return (
     <svg
@@ -15,13 +15,14 @@ export function Logo({ size = 32 }: LogoProps) {
       aria-hidden="true"
     >
       <path
-        d="M16 3l11 4v8c0 7-4.5 12-11 14C9.5 27 5 22 5 15V7l11-4z"
+        d="M9 4h10l5 5v17a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinejoin="round"
       />
+      <path d="M19 4v5h5" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
       <path
-        d="M11 16l3.5 3.5L21 13"
+        d="M11 18l3 3 6-7"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
