@@ -11,6 +11,8 @@ export function SummaryBanner() {
   return (
     <section
       data-testid="summary-banner"
+      role="status"
+      aria-live="polite"
       className="border-border rounded-2xl border p-6"
       style={{
         background:

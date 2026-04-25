@@ -24,7 +24,17 @@ export function PricingGate({ checkoutUrl }: PricingGateProps) {
         Upgrade for unlimited contract reviews. Pay only when you need it — no subscription traps.
       </p>
       <div className="flex justify-center">
-        <Button data-testid="pricing-cta" render={<a href={url} target="_blank" rel="noopener" />}>
+        <Button
+          data-testid="pricing-cta"
+          render={
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Upgrade to Individual (opens in new tab)"
+            />
+          }
+        >
           Upgrade to Individual
         </Button>
       </div>

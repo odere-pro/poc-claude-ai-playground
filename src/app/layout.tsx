@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { ReportProvider } from "@/context/ReportContext";
 import { AppHeader } from "@/components/organisms/AppHeader";
 import { VoiceController } from "@/components/organisms/VoiceController";
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/lib/types";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,13 +23,23 @@ export const metadata: Metadata = {
     "Upload an employment contract and get a streamed compliance report in your language, with every clause cited to a real legal article.",
 };
 
-export default function RootLayout({
+function isSupportedLang(value: string | undefined): value is SupportedLanguage {
+  return !!value && (SUPPORTED_LANGUAGES as readonly string[]).includes(value);
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // SSR language: use the persisted cookie if present, otherwise "en".
+  // The client-side languageDetector cascade refines this on mount and
+  // can write back to the cookie later for SSR consistency.
+  const cookieStore = await cookies();
+  const stored = cookieStore.get("clauseguard.lang")?.value;
+  const lang: SupportedLanguage = isSupportedLang(stored) ? stored : "en";
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang={lang} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <ReportProvider>
           <AppHeader />

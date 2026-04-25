@@ -18,9 +18,15 @@ export function ClauseList() {
   }
 
   return (
-    <ul data-testid="clause-list" className="flex flex-col" style={{ listStyle: "none" }}>
+    <ul
+      data-testid="clause-list"
+      role="list"
+      aria-live="polite"
+      aria-busy={state.phase === "analyzing"}
+      className="flex list-none flex-col"
+    >
       {ordered.map((clause) => (
-        <li key={clause.id}>
+        <li key={clause.id} role="listitem">
           <ClauseCard
             clause={clause}
             highlighted={state.highlightedClauseId === clause.id}

@@ -17,6 +17,8 @@ export function JurisdictionToggle({ value, onChange }: JurisdictionToggleProps)
   return (
     <div
       data-testid="jurisdiction-toggle"
+      role="group"
+      aria-label="Select jurisdiction"
       className="border-border inline-flex gap-1 rounded-lg border p-1"
     >
       {OPTIONS.map((opt) => (
