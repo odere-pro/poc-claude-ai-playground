@@ -1,0 +1,19 @@
+export const runtime = "nodejs";
+export const maxDuration = 30;
+
+/**
+ * Stub: voice intent classification is gated behind NEXT_PUBLIC_VOICE_ENABLED
+ * (P1). The real Claude tool-use call lands in Phase 6.
+ */
+export async function POST(): Promise<Response> {
+  if (process.env.NEXT_PUBLIC_VOICE_ENABLED !== "true") {
+    return new Response(JSON.stringify({ error: "Voice features are not enabled" }), {
+      status: 503,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  return new Response(JSON.stringify({ error: "Voice command is not yet implemented" }), {
+    status: 501,
+    headers: { "Content-Type": "application/json" },
+  });
+}

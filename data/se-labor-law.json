@@ -1,0 +1,13 @@
+{
+  "jurisdiction": "se",
+  "source": "se-labor-law.json",
+  "rules": [
+    {
+      "id": "se-las-6",
+      "article": "LAS § 6",
+      "label": "Placeholder — Trial period limits",
+      "summary": "Placeholder rule. Replace with the real SE ruleset (Phase 6).",
+      "tags": ["trial-period"]
+    }
+  ]
+}
