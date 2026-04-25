@@ -5,7 +5,10 @@ import path from "node:path";
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      "server-only": path.resolve(__dirname, "./tests/mocks/server-only-shim.ts"),
+    },
   },
   test: {
     passWithNoTests: true,
@@ -13,7 +16,10 @@ export default defineConfig({
       {
         plugins: [react()],
         resolve: {
-          alias: { "@": path.resolve(__dirname, "./src") },
+          alias: {
+            "@": path.resolve(__dirname, "./src"),
+            "server-only": path.resolve(__dirname, "./tests/mocks/server-only-shim.ts"),
+          },
         },
         test: {
           name: "unit",
@@ -25,7 +31,10 @@ export default defineConfig({
       {
         plugins: [react()],
         resolve: {
-          alias: { "@": path.resolve(__dirname, "./src") },
+          alias: {
+            "@": path.resolve(__dirname, "./src"),
+            "server-only": path.resolve(__dirname, "./tests/mocks/server-only-shim.ts"),
+          },
         },
         test: {
           name: "integration",
