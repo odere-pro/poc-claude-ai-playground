@@ -10,13 +10,11 @@ import { useReport, useReportDispatch } from "@/context/ReportContext";
 import { extractContractText } from "@/lib/extractContractText";
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
-const ACCEPTED = new Set([
-  "application/pdf",
-  "text/plain",
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-]);
+// Only formats `extractContractText` knows how to read. Image MIMEs
+// would silently ship binary bytes to Claude — reintroduce when a
+// vision-capable extractor lands.
+const ACCEPTED = new Set(["application/pdf", "text/plain"]);
+const ACCEPT_ATTR = ".pdf,.txt,text/plain,application/pdf";
 
 type Tab = "file" | "text" | "speak";
 
@@ -35,7 +33,7 @@ export function UploadZone() {
 
   const accept = async (file: File): Promise<boolean> => {
     if (!ACCEPTED.has(file.type)) {
-      setError("We support PDFs and images.");
+      setError("We support PDFs and plain-text files.");
       return false;
     }
     if (file.size > MAX_FILE_BYTES) {
@@ -127,12 +125,12 @@ export function UploadZone() {
           style={{ borderColor: "var(--color-border)" }}
         >
           <p className="text-sm" style={{ color: "var(--color-muted-foreground)" }}>
-            Drop a PDF here, or pick a file.
+            Drop a PDF or .txt here, or pick a file.
           </p>
           <input
             type="file"
             data-testid="file-input"
-            accept=".pdf,image/*"
+            accept={ACCEPT_ATTR}
             onChange={onPick}
             className="text-sm"
           />

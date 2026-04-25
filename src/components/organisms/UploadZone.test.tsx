@@ -41,13 +41,13 @@ describe("UploadZone", () => {
     });
   });
 
-  it("rejects non-PDF/image files with an inline error", () => {
+  it("rejects unsupported MIME types with an inline error", () => {
     renderUploadZone("false");
     const input = screen.getByTestId("file-input") as HTMLInputElement;
     fireEvent.change(input, {
       target: { files: [makeFile("x.bmp", "image/bmp")] },
     });
-    expect(screen.getByText(/PDFs and images/i)).toBeInTheDocument();
+    expect(screen.getByText(/PDFs and plain-text/i)).toBeInTheDocument();
   });
 
   it("rejects files over 10MB", () => {

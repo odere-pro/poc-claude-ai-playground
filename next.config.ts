@@ -4,12 +4,18 @@ import type { NextConfig } from "next";
 // when NEXT_PUBLIC_VOICE_ENABLED is true. Camera + geolocation are denied.
 const permissionsPolicy = ["camera=()", "microphone=(self)", "geolocation=()"].join(", ");
 
-// CSP — restrictive baseline. 'unsafe-inline' on style is required by
-// Tailwind/shadcn until we adopt nonces; revisit when CSP nonce middleware
-// lands. 'unsafe-inline' on script is intentionally absent.
+// CSP — restrictive baseline. 'unsafe-eval' is only allowed in dev
+// (Turbopack HMR). 'unsafe-inline' on script remains until we wire nonce
+// middleware (Next.js injects inline boot scripts during hydration).
+// Inline styles are permitted in both modes for Tailwind/shadcn.
+const isProd = process.env.NODE_ENV === "production";
+const scriptSrc = isProd
+  ? "script-src 'self' 'unsafe-inline'"
+  : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+  scriptSrc,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' https://fonts.gstatic.com",

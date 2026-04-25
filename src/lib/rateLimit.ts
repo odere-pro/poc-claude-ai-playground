@@ -17,10 +17,17 @@ interface Limit {
 const buckets = new Map<string, Bucket>();
 
 function clientIp(req: NextRequest): string {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
+  // Prefer `x-real-ip` (Vercel sets this to the actual client). Fall
+  // back to the LAST entry in `x-forwarded-for` — the platform appends
+  // the real IP last, while earlier entries are client-controlled and
+  // trivially spoofable.
   const real = req.headers.get("x-real-ip");
-  if (real) return real;
+  if (real) return real.trim();
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const parts = forwarded.split(",");
+    return parts[parts.length - 1].trim();
+  }
   return "anonymous";
 }
 
