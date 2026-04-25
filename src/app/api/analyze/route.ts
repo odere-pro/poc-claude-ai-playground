@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getAnthropic, MODEL } from "@/lib/anthropic";
 import { enforceCitation } from "@/lib/citationValidator";
 import { buildAnalysisPrompt } from "@/lib/prompts";
+import { rateLimit } from "@/lib/rateLimit";
 import { analyzeRequestSchema, clauseEventSchema, summaryEventSchema } from "@/lib/schemas";
 import { checkEntitlement, reportUsage } from "@/lib/solvimon";
 import type { Jurisdiction, Ruleset, StreamEvent, SummaryEvent } from "@/lib/types";
@@ -49,6 +50,10 @@ async function loadRuleset(jurisdiction: Jurisdiction): Promise<Ruleset> {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  if (!rateLimit(req, "analyze", { capacity: 10, refillPerSec: 10 / 60 })) {
+    return jsonError(429, "Too many requests. Slow down.");
+  }
+
   const url = new URL(req.url);
 
   // Demo step 11 — short-circuit pricing gate without invoking anything.
