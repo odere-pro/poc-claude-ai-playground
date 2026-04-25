@@ -50,6 +50,34 @@ describe("checkEntitlement", () => {
     const result = await checkEntitlement("cus_1");
     expect(result.allowed).toBe(true);
   });
+
+  it("denies when Solvimon returns allowed: null (only explicit true grants)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ allowed: null }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+    const result = await checkEntitlement("cus_1");
+    expect(result.allowed).toBe(false);
+  });
+
+  it("denies when Solvimon omits the allowed field entirely", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({}), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+    const result = await checkEntitlement("cus_1");
+    expect(result.allowed).toBe(false);
+  });
 });
 
 describe("reportUsage", () => {

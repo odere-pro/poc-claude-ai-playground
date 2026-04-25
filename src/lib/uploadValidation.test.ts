@@ -115,5 +115,26 @@ describe("validateUpload", () => {
     expect(ALLOWED_MIME_TYPES).toContain("application/pdf");
     expect(ALLOWED_MIME_TYPES).toContain("image/jpeg");
     expect(ALLOWED_MIME_TYPES).toContain("image/png");
+    expect(ALLOWED_MIME_TYPES).toContain("text/plain");
+  });
+
+  it("accepts text/plain whose head decodes as valid UTF-8", () => {
+    const result = validateUpload({
+      declaredMime: "text/plain",
+      sizeBytes: 32,
+      head: new TextEncoder().encode("hello world"),
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  it("rejects text/plain whose head is invalid UTF-8 (renamed binary)", () => {
+    // 0xC3 0x28 is an invalid UTF-8 sequence — fatal decode throws.
+    const result = validateUpload({
+      declaredMime: "text/plain",
+      sizeBytes: 32,
+      head: new Uint8Array([0xc3, 0x28, 0xff, 0xfe]),
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe("magic_mismatch");
   });
 });

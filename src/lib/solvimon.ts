@@ -51,10 +51,12 @@ export async function checkEntitlement(customerId: string | undefined): Promise<
       TIMEOUT_MS,
     );
     if (!res.ok) return { allowed: true };
-    const body = (await res.json()) as { allowed?: boolean; checkoutUrl?: string };
+    const body = (await res.json()) as { allowed?: unknown; checkoutUrl?: unknown };
+    // Soft-fail policy: only an explicit boolean true grants access. A null,
+    // missing, 0, or non-boolean response from Solvimon is treated as deny.
     return {
-      allowed: body.allowed !== false,
-      checkoutUrl: body.checkoutUrl,
+      allowed: body.allowed === true,
+      checkoutUrl: typeof body.checkoutUrl === "string" ? body.checkoutUrl : undefined,
     };
   } catch {
     // Soft-fail. Logging a warning here would leak customer ids — skip.

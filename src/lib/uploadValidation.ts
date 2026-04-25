@@ -58,8 +58,17 @@ export function validateUpload(candidate: UploadCandidate): UploadValidationResu
   if (candidate.sizeBytes > MAX_UPLOAD_BYTES) return { ok: false, reason: "too_large" };
   if (!isAllowedMime(candidate.declaredMime)) return { ok: false, reason: "mime_not_allowed" };
 
-  // Plain text has no magic-byte signature — trust the declared MIME.
-  if (candidate.declaredMime === "text/plain") return { ok: true };
+  // text/plain has no canonical magic-byte signature, but we still confirm
+  // the head decodes as valid UTF-8. A renamed binary will fail the fatal
+  // decode and be rejected as magic_mismatch.
+  if (candidate.declaredMime === "text/plain") {
+    try {
+      new TextDecoder("utf-8", { fatal: true }).decode(candidate.head);
+      return { ok: true };
+    } catch {
+      return { ok: false, reason: "magic_mismatch" };
+    }
+  }
 
   const detected = detectMimeFromMagicBytes(candidate.head);
   if (detected !== candidate.declaredMime) return { ok: false, reason: "magic_mismatch" };
