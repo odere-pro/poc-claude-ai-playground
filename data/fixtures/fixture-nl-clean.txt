@@ -1,0 +1,32 @@
+EMPLOYMENT CONTRACT — ANONYMIZED FIXTURE (NL CLEAN)
+
+This fixture is fully compliant with NL labor law. Used by the
+clean-path e2e test to verify the "looks compliant" UI state.
+
+----------------------------------------------------------------
+
+Article 1 — Trial period
+The employee shall serve a probation period of one (1) month,
+during which either party may terminate with at least one week's notice.
+
+Article 2 — Working hours
+Working hours are 36 hours per week. Average weekly hours over a
+16-week period shall not exceed 48. Daily rest of at least 11
+consecutive hours is guaranteed.
+
+Article 3 — Notice period
+Termination by either party requires at least one (1) month
+written notice. After 5 years of service, employer notice
+extends to 2 months.
+
+Article 4 — Holiday allowance
+The employee receives statutory holiday allowance of 8% of gross
+annual salary, paid in May.
+
+Article 5 — Confidentiality
+The employee shall keep proprietary information confidential
+during and for two years after employment.
+
+Article 6 — Governing law
+This contract is governed by Dutch law. Disputes shall be
+resolved by the competent court in Amsterdam.

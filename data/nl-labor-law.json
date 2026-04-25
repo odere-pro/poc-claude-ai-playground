@@ -5,9 +5,44 @@
     {
       "id": "nl-non-compete",
       "article": "BW 7:653",
-      "label": "Placeholder — Non-compete clause limits",
-      "summary": "Placeholder rule. Replace with the real NL ruleset before the demo (Phase 5).",
-      "tags": ["non-compete"]
+      "label": "Non-compete clause limits",
+      "summary": "Non-compete is invalid in fixed-term contracts unless the employer demonstrates compelling business interest in writing. Geographic and temporal scope must be reasonable.",
+      "tags": ["non-compete", "post-employment"]
+    },
+    {
+      "id": "nl-trial-period",
+      "article": "BW 7:652",
+      "label": "Trial period cap",
+      "summary": "Maximum 1 month for contracts under 2 years, maximum 2 months for contracts of 2 years or longer. No trial period in contracts of 6 months or shorter.",
+      "tags": ["trial-period", "probation"]
+    },
+    {
+      "id": "nl-notice-period",
+      "article": "BW 7:672",
+      "label": "Statutory notice period",
+      "summary": "Employer notice is at least 1 month, scaling with length of service up to 4 months. Employee notice is 1 month unless contractually extended (max 6 months and reciprocal).",
+      "tags": ["termination", "notice"]
+    },
+    {
+      "id": "nl-working-hours",
+      "article": "Arbeidstijdenwet § 5:7",
+      "label": "Maximum working hours",
+      "summary": "Average maximum 48 hours per week over 16 weeks; 12 hours per shift; mandatory rest of 11 consecutive hours per 24 hours. Overrides any clause demanding longer.",
+      "tags": ["working-hours", "overtime", "rest"]
+    },
+    {
+      "id": "nl-instant-dismissal",
+      "article": "BW 7:676",
+      "label": "Instant dismissal",
+      "summary": "Termination without notice is only valid for urgent cause communicated immediately. Generic 'at-will' termination clauses are unenforceable.",
+      "tags": ["termination", "at-will"]
+    },
+    {
+      "id": "nl-minimum-wage",
+      "article": "Wet minimumloon § 7",
+      "label": "Statutory minimum wage",
+      "summary": "Compensation must meet or exceed the statutory minimum wage for the worker's age, including holiday allowance (vakantiegeld) of at least 8% of gross annual salary.",
+      "tags": ["wage", "compensation"]
     }
   ]
 }

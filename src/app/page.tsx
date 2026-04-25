@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { JurisdictionToggle } from "@/components/molecules/JurisdictionToggle";
 import { PermitSelector } from "@/components/molecules/PermitSelector";
 import { UploadZone } from "@/components/organisms/UploadZone";
@@ -14,7 +15,8 @@ export default function UploadPage() {
   const router = useRouter();
   const { state, dispatch } = useReport();
   const { start } = useAnalyze({ onPaymentRequired: () => router.push("/results") });
-  const [isUploading, setUploading] = useState(false);
+  const [contractText, setContractText] = useState<string | null>(null);
+  const [isAnalyzing, setAnalyzing] = useState(false);
 
   // Initialize language from the cascade once the client mounts.
   useEffect(() => {
@@ -47,15 +49,23 @@ export default function UploadPage() {
         />
       </div>
 
-      <UploadZone
-        disabled={isUploading}
-        onText={async (text) => {
-          setUploading(true);
-          router.push("/analyzing");
-          await start(text);
-          router.push("/results");
-        }}
-      />
+      <UploadZone disabled={isAnalyzing} onText={(text) => setContractText(text)} />
+
+      <div className="flex justify-end">
+        <Button
+          data-testid="analyze-cta"
+          disabled={!contractText || isAnalyzing}
+          onClick={async () => {
+            if (!contractText) return;
+            setAnalyzing(true);
+            router.push("/analyzing");
+            await start(contractText);
+            router.push("/results");
+          }}
+        >
+          Analyze contract
+        </Button>
+      </div>
     </section>
   );
 }

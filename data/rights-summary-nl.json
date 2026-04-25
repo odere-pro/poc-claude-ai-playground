@@ -1,0 +1,37 @@
+{
+  "jurisdiction": "nl",
+  "union": {
+    "name": "FNV (Federatie Nederlandse Vakbeweging)",
+    "url": "https://www.fnv.nl/",
+    "phone": "+31 88 368 0 368"
+  },
+  "rights": [
+    {
+      "title": "Right to a written contract",
+      "description": "Your employer must provide the essential terms of your employment in writing within one month of starting work.",
+      "citation": {
+        "article": "BW 7:655",
+        "label": "Written notification of employment terms",
+        "source": "nl-labor-law.json"
+      }
+    },
+    {
+      "title": "Right to holiday pay",
+      "description": "You are entitled to at least 8% of your gross annual salary as holiday allowance, paid at least once per year.",
+      "citation": {
+        "article": "Wet minimumloon § 7",
+        "label": "Statutory minimum wage",
+        "source": "nl-labor-law.json"
+      }
+    },
+    {
+      "title": "Right to refuse unsafe work",
+      "description": "Under Dutch law you can refuse work that endangers your health or safety, without retaliation.",
+      "citation": null,
+      "contact": {
+        "name": "Inspectie SZW (labour inspectorate)",
+        "url": "https://www.nlarbeidsinspectie.nl/"
+      }
+    }
+  ]
+}

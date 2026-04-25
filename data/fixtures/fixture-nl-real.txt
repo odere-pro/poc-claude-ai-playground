@@ -1,0 +1,32 @@
+EMPLOYMENT CONTRACT — ANONYMIZED FIXTURE (NL)
+
+This fixture mixes 2 illegal, 2 compliant, and 2 unchecked clauses.
+Used by the e2e happy-path test and as Phase-5 demo material.
+
+----------------------------------------------------------------
+
+Article 1 — Trial period
+The employee shall serve a probation period of three (3) months,
+during which either party may terminate without notice.
+
+Article 2 — Working hours
+Working hours are 40 hours per week, Monday through Friday, with
+overtime compensated at 1.25x the regular rate.
+
+Article 3 — Non-compete
+For a period of two (2) years following termination, the employee
+shall not, anywhere in the European Union, work in any industry
+that the employer or its affiliates are engaged in.
+
+Article 4 — Notice period
+Either party may terminate this contract by providing one (1)
+month written notice, in line with statutory notice periods.
+
+Article 5 — Confidentiality
+The employee agrees to keep all proprietary information confidential
+both during and after employment, including but not limited to client
+lists, source code, and strategic plans.
+
+Article 6 — Dispute resolution
+Any disputes arising from this contract shall be submitted to
+binding arbitration in Amsterdam under Dutch law.

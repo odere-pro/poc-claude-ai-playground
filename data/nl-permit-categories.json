@@ -1,0 +1,17 @@
+{
+  "jurisdiction": "nl",
+  "permits": [
+    {
+      "id": "gvva",
+      "label": "GVVA (single permit)",
+      "default": true,
+      "forbiddenClauseTags": ["non-compete-broad", "outside-scope-of-permit"]
+    },
+    {
+      "id": "kennismigrant",
+      "label": "Kennismigrant (highly skilled migrant)",
+      "default": false,
+      "forbiddenClauseTags": ["salary-below-threshold"]
+    }
+  ]
+}
