@@ -1,0 +1,27 @@
+{
+  "id": "nl-international",
+  "title": "International assignment",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-non-compete",
+    "nl-notice-period",
+    "nl-working-hours",
+    "nl-minimum-wage",
+    "nl-overtime-waiver",
+    "nl-leave-waiver",
+    "nl-unilateral-relocation",
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "parties",              "description": "Full names and addresses of both employer and employee" },
+    { "id": "assignment-country",   "description": "Country (or countries) where the assignment takes place" },
+    { "id": "assignment-duration",  "description": "Start and end date of the international assignment" },
+    { "id": "home-country-terms",   "description": "Confirmation that the home-country employment contract remains in force" },
+    { "id": "host-country-salary",  "description": "Gross salary during the assignment and any cost-of-living adjustments" },
+    { "id": "relocation-allowance", "description": "Relocation cost reimbursement (moving costs, housing, travel)" },
+    { "id": "governing-law",        "description": "Applicable law governing the assignment agreement" },
+    { "id": "tax-equalization",     "description": "Tax equalization or protection policy during the assignment" },
+    { "id": "repatriation",         "description": "Terms for return to the home country role after the assignment ends" }
+  ],
+  "red_flag_ids": ["study_cost_clawback"]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "nl-posted-worker",
+  "title": "Posted worker (gedetacheerde werknemer)",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-working-hours",
+    "nl-minimum-wage",
+    "nl-overtime-waiver",
+    "nl-leave-waiver",
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "parties",               "description": "Names and addresses of the home-country employer and the Dutch host company" },
+    { "id": "home-country-contract", "description": "Reference to the home-country employment contract that remains in force" },
+    { "id": "posting-country",       "description": "The Netherlands as the host country for the posting" },
+    { "id": "posting-duration",      "description": "Start and end date of the posting (short-term postings have lighter obligations)" },
+    { "id": "dutch-minimum-wage",    "description": "Guarantee that pay during posting meets Dutch statutory minimum wage" },
+    { "id": "dutch-working-hours",   "description": "Compliance with Dutch Arbeidstijdenwet during the posting" },
+    { "id": "dutch-leave",           "description": "Dutch statutory minimum leave entitlements apply for the duration of posting" },
+    { "id": "pwri-registration",     "description": "Registration with the Dutch Posted Workers in the Netherlands Implementation Act (WagwEU/PWRI) portal" }
+  ],
+  "red_flag_ids": ["below_minimum_wage"]
+}

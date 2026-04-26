@@ -1,0 +1,17 @@
+{
+  "id": "nl-placement",
+  "title": "Placement confirmation letter",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "employer-details",  "description": "Full name, address, and KvK number of the employer" },
+    { "id": "employee-details",  "description": "Full name and address of the employee" },
+    { "id": "start-date",        "description": "Confirmed employment start date" },
+    { "id": "role-title",        "description": "Job title and department" },
+    { "id": "salary-confirmation","description": "Confirmed gross salary and payment date" },
+    { "id": "reference-to-contract","description": "Reference to the full employment contract that this letter supplements" }
+  ],
+  "red_flag_ids": []
+}

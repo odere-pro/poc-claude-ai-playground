@@ -1,0 +1,27 @@
+{
+  "id": "nl-indefinite",
+  "title": "Standard indefinite employment",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-trial-period",
+    "nl-non-compete",
+    "nl-notice-period",
+    "nl-working-hours",
+    "nl-instant-dismissal",
+    "nl-minimum-wage",
+    "nl-overtime-waiver",
+    "nl-leave-waiver",
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "parties",        "description": "Full names and addresses of both employer and employee" },
+    { "id": "start-date",     "description": "Employment start date" },
+    { "id": "job-description","description": "Job title and description of the role and responsibilities" },
+    { "id": "place-of-work",  "description": "Primary place of work" },
+    { "id": "gross-salary",   "description": "Gross salary and payment frequency (monthly/weekly)" },
+    { "id": "working-hours",  "description": "Agreed weekly working hours" },
+    { "id": "notice-period",  "description": "Notice period for both employer and employee" },
+    { "id": "holiday-allowance","description": "Vakantiegeld (holiday allowance) of at least 8% of gross salary" }
+  ],
+  "red_flag_ids": ["unpaid_overtime", "study_cost_clawback", "trial_period_twice"]
+}

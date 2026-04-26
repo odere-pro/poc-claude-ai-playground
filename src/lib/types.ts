@@ -52,12 +52,27 @@ export interface RightsItem {
   };
 }
 
+// --- RAG risk colour coding ---
+
+export type RiskLevel = "red" | "amber" | "green";
+
+export interface RiskMapping {
+  /** RAG risk colour derived from the matched rule/example. */
+  readonly risk: RiskLevel;
+  /** Data path to the authoritative rule: "{source}/{ruleId}", e.g. "nl-labor-law.json/nl-working-hours". */
+  readonly path: string;
+  /** Topic area, e.g. "wages", "working-hours", "migrant-rights". */
+  readonly category: string;
+}
+
 // --- Ruleset shapes (data/{jurisdiction}-labor-law.json, etc.) ---
 
 export interface Rule {
   readonly id: string;
   readonly article: string;
   readonly label: string;
+  /** Topic area used for risk mapping, e.g. "wages". Optional for backward compat. */
+  readonly category?: string;
   readonly summary: string;
   readonly tags: readonly string[];
 }
@@ -102,6 +117,8 @@ export interface ClauseEvent {
   readonly citation: Citation | null;
   readonly action: string | null;
   readonly permitConflict: PermitConflict | null;
+  /** Structured risk mappings — one entry per violated rule or matched risk example. */
+  readonly riskMappings?: readonly RiskMapping[];
 }
 
 export interface SummaryEvent {
@@ -161,6 +178,54 @@ export interface VoiceCommandResponse {
   readonly intent: VoiceIntent;
   readonly responseText: string;
   readonly language: SupportedLanguage;
+}
+
+// --- Contract classification + risk pipeline ---
+
+export interface ContractTypeEntry {
+  readonly id: string;
+  readonly title: string;
+  readonly jurisdiction: Jurisdiction;
+  readonly files: readonly string[];
+}
+
+export interface MandatoryClause {
+  readonly id: string;
+  readonly description: string;
+}
+
+export interface RedFlagClause {
+  readonly id: string;
+  readonly severity: string;
+  readonly riskLevel: RiskLevel;
+  readonly category: string;
+  readonly heading: string;
+  readonly plain_english: string;
+  readonly action: string;
+}
+
+export interface ContractTypeSpec {
+  readonly id: string;
+  readonly title: string;
+  readonly jurisdiction: Jurisdiction;
+  readonly applicable_rule_ids: readonly string[];
+  readonly mandatory_clauses: readonly MandatoryClause[];
+  readonly red_flag_ids: readonly string[];
+}
+
+export interface LoadedRuleSet {
+  readonly contractType: string;
+  readonly contractTypeTitle: string;
+  readonly applicableRules: readonly Rule[];
+  readonly mandatoryClauses: readonly MandatoryClause[];
+  readonly redFlags: readonly RedFlagClause[];
+  readonly rights: readonly RightsItem[];
+}
+
+export interface ClassifyResult {
+  readonly typeId: string;
+  readonly confidence: number;
+  readonly jurisdiction: Jurisdiction;
 }
 
 // --- Persistence (localStorage summary-only blob) ---

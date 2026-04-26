@@ -1,0 +1,26 @@
+{
+  "id": "nl-zero-hours",
+  "title": "Zero-hours (oproepcontract)",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-trial-period",
+    "nl-notice-period",
+    "nl-working-hours",
+    "nl-instant-dismissal",
+    "nl-minimum-wage",
+    "nl-overtime-waiver",
+    "nl-leave-waiver",
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "parties",           "description": "Full names and addresses of both employer and employee" },
+    { "id": "start-date",        "description": "Employment start date" },
+    { "id": "job-description",   "description": "Nature of the work for which the employee can be called up" },
+    { "id": "call-up-procedure", "description": "How and how far in advance the employer must notify the employee of a shift (minimum 4 days' notice per BW 7:628a)" },
+    { "id": "refusal-right",     "description": "Employee's right to refuse a call-up if not given adequate notice" },
+    { "id": "hourly-rate",       "description": "Hourly pay rate meeting or exceeding minimum wage for the worker's age" },
+    { "id": "holiday-allowance", "description": "Vakantiegeld of at least 8% of gross earnings, stated per hour or accrued" },
+    { "id": "deemed-indefinite", "description": "After 12 months, the average hours of the preceding 3 months become the guaranteed minimum (BW 7:628a(9))" }
+  ],
+  "red_flag_ids": ["unpaid_overtime", "below_minimum_wage"]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "nl-seasonal",
+  "title": "Seasonal employment",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-trial-period",
+    "nl-notice-period",
+    "nl-working-hours",
+    "nl-minimum-wage",
+    "nl-overtime-waiver",
+    "nl-leave-waiver",
+    "nl-document-withholding",
+    "nl-recruitment-fee",
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "parties",           "description": "Full names and addresses of both employer and employee" },
+    { "id": "start-date",        "description": "Start date of the seasonal period" },
+    { "id": "end-date",          "description": "End date or duration of the seasonal period" },
+    { "id": "job-description",   "description": "Type of seasonal work (e.g., harvest, packaging, tourism)" },
+    { "id": "place-of-work",     "description": "Work location including any accommodation address if provided" },
+    { "id": "gross-salary",      "description": "Gross hourly or daily rate meeting minimum wage for the worker's age" },
+    { "id": "working-hours",     "description": "Expected daily or weekly working hours" },
+    { "id": "holiday-allowance", "description": "Vakantiegeld of at least 8% of gross salary or daily accrual statement" }
+  ],
+  "red_flag_ids": [
+    "below_minimum_wage",
+    "salary_in_kind",
+    "illegal_probation_short"
+  ]
+}
