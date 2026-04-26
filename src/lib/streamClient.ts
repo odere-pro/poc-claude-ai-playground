@@ -56,6 +56,7 @@ export async function consumeAnalyzeStream(
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = "";
+    let seenDone = false;
 
     for (;;) {
       const { value, done } = await reader.read();
@@ -70,9 +71,13 @@ export async function consumeAnalyzeStream(
         const parsed = parseSSEEvent(rawEvent);
         if (!parsed) continue;
         if (parsed === "[DONE]") {
+          seenDone = true;
           flush();
           if (intervalId !== null) clearInterval(intervalId);
           return;
+        }
+        if (parsed === "error") {
+          throw new Error("upstream_failed");
         }
         if (parsed.type === "clause") pending.push(parsed);
         else if (parsed.type === "summary") {
@@ -83,6 +88,8 @@ export async function consumeAnalyzeStream(
     }
 
     flush();
+    // Stream closed without [DONE] — server crashed or was interrupted.
+    if (!seenDone) throw new Error("stream_incomplete");
   } catch (err: unknown) {
     flush();
     onError(err instanceof Error ? err : new Error(String(err)));
@@ -91,7 +98,7 @@ export async function consumeAnalyzeStream(
   }
 }
 
-function parseSSEEvent(raw: string): StreamEvent | "[DONE]" | null {
+function parseSSEEvent(raw: string): StreamEvent | "[DONE]" | "error" | null {
   // Each event may have multiple "data: " lines per the SSE spec.
   const dataLines = raw
     .split("\n")
@@ -106,15 +113,13 @@ function parseSSEEvent(raw: string): StreamEvent | "[DONE]" | null {
   } catch {
     return null;
   }
+  if (typeof obj !== "object" || obj === null) return null;
+  const typed = obj as { type?: unknown };
+  if (typed.type === "error") return "error";
   // Schema-validate before trusting the wire shape — malformed events from
   // a stale or compromised server are silently dropped instead of corrupting
   // typed state.
-  if (
-    typeof obj === "object" &&
-    obj !== null &&
-    "type" in obj &&
-    (obj as { type?: unknown }).type === "clause"
-  ) {
+  if (typed.type === "clause") {
     const r = clauseEventSchema.safeParse(obj);
     return r.success ? r.data : null;
   }

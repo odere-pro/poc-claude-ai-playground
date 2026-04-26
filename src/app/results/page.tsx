@@ -1,19 +1,26 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ClauseList } from "@/components/organisms/ClauseList";
-import { PricingGate } from "@/components/organisms/PricingGate";
 import { SummaryBanner } from "@/components/organisms/SummaryBanner";
 import { useReport } from "@/context/ReportContext";
 
 export default function ResultsPage() {
+  const router = useRouter();
   const { state, dispatch } = useReport();
 
-  // No analysis attempted and no saved blob → bounce to upload.
-  if (state.phase !== "results" && state.phase !== "incomplete" && !state.savedSummary) {
-    return <PricingGate />;
-  }
+  const hasNoResults =
+    state.phase !== "results" && state.phase !== "incomplete" && !state.savedSummary;
+
+  // No analysis and no saved session → send back to upload.
+  useEffect(() => {
+    if (hasNoResults) router.push("/");
+  }, [hasNoResults, router]);
+
+  if (hasNoResults) return null;
 
   const isIncomplete = state.phase === "incomplete";
 

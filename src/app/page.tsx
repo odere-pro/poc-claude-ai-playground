@@ -14,7 +14,7 @@ import { detectLanguage } from "@/lib/languageDetector";
 export default function UploadPage() {
   const router = useRouter();
   const { state, dispatch } = useReport();
-  const { start } = useAnalyze({ onPaymentRequired: () => router.push("/results") });
+  const { start } = useAnalyze({ onPaymentRequired: () => router.push("/pricing") });
   const [contractText, setContractText] = useState<string | null>(null);
   const [isAnalyzing, setAnalyzing] = useState(false);
 

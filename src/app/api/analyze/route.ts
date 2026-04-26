@@ -77,6 +77,11 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
   const { contractText, permitType, jurisdiction, detectedLanguage, customerId } = parsed.data;
 
+  // Fail fast if Anthropic key is absent — avoids a silent stream failure.
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return jsonError(503, "Analysis service not configured");
+  }
+
   // Soft-fail entitlement check. Only an explicit deny blocks the user.
   const entitlement = await checkEntitlement(customerId);
   if (!entitlement.allowed) {
@@ -257,7 +262,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         void reportUsage(customerId, usageMeta);
       } catch {
         // Don't echo the upstream error — could leak prompt or model details.
-        controller.enqueue(ENCODER.encode(`event: error\ndata: {"error":"upstream_failed"}\n\n`));
+        controller.enqueue(ENCODER.encode(`data: {"type":"error","error":"upstream_failed"}\n\n`));
         controller.close();
       }
     },
