@@ -1,24 +1,126 @@
 import "server-only";
 
+import Anthropic from "@anthropic-ai/sdk";
+import { readFile } from "fs/promises";
 import type { NextRequest } from "next/server";
+import path from "path";
 import { rateLimit } from "@/lib/rateLimit";
-import { MAX_AUDIO_BYTES, transcribeContextSchema, type TranscribeContext } from "@/lib/schemas";
 
 export const runtime = "nodejs";
-export const maxDuration = 30;
+export const maxDuration = 60;
 
-// Confirm these constants against Reson8 API docs if the endpoint or field
-// names ever change — they are the only coupling points to Reson8's contract.
-const RESON8_BASE_URL = "https://api.reson8.io/v1";
-const DEFAULT_MODEL = "reson8-1";
+// Reson8 prerecorded STT — https://docs.reson8.dev/api/speech-to-text/prerecorded/
+const RESON8_URL = "https://api.reson8.dev/v1/speech-to-text/prerecorded";
 
-// Reson8 may return the transcript under "text" or "transcript" depending on
-// the model version. We try both rather than hard-coding one field name.
-function extractTranscript(raw: unknown): string {
-  const r = raw as Record<string, unknown>;
-  if (typeof r.text === "string") return r.text;
-  if (typeof r.transcript === "string") return r.transcript;
-  return "";
+const STT_TIMEOUT_MS = 30_000;
+
+// Reson8 custom model IDs are UUIDs — validate before injecting into URL.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Domain vocabulary file — loaded once per process.
+let domainVocabCache: DomainVocab | null = null;
+
+interface DomainVocab {
+  abbreviations: { nl: AbbrevEntry[]; se: AbbrevEntry[] };
+  key_concepts: { nl: ConceptEntry[]; se: ConceptEntry[] };
+  spoken_variants: SpokenVariant[];
+}
+interface AbbrevEntry {
+  abbr: string;
+  full: string;
+  en: string;
+}
+interface ConceptEntry {
+  term: string;
+  en: string;
+  note: string;
+}
+interface SpokenVariant {
+  spoken: string;
+  canonical: string;
+}
+
+async function loadDomainVocab(): Promise<DomainVocab | null> {
+  if (domainVocabCache) return domainVocabCache;
+  try {
+    const raw = await readFile(
+      path.join(process.cwd(), "data", "domain-vocab", "labor-law-terms.json"),
+      "utf-8",
+    );
+    domainVocabCache = JSON.parse(raw) as DomainVocab;
+    return domainVocabCache;
+  } catch (err) {
+    console.error("Failed to load domain vocab:", err);
+    return null;
+  }
+}
+
+function buildDomainContext(vocab: DomainVocab | null, jurisdiction: string): string {
+  if (!vocab) return "";
+  const jur = jurisdiction === "se" ? "se" : "nl";
+
+  // Defensive: guard against missing keys in case the JSON file is incomplete.
+  const abbrevs = (vocab.abbreviations?.[jur] ?? [])
+    .map((a) => `${a.abbr} = ${a.full} (${a.en})`)
+    .join("\n");
+  const concepts = (vocab.key_concepts?.[jur] ?? [])
+    .map((c) => `${c.term} (${c.en}): ${c.note}`)
+    .join("\n");
+  const spoken = (vocab.spoken_variants ?? [])
+    .map((s) => `"${s.spoken}" → ${s.canonical}`)
+    .join(", ");
+
+  return `## Labor law abbreviations (${jur.toUpperCase()})
+${abbrevs}
+
+## Key concepts
+${concepts}
+
+## Spoken variants to watch for
+${spoken}`;
+}
+
+function buildReasoningPrompt(
+  transcript: string,
+  jurisdiction: string,
+  domainContext: string,
+  clauses: unknown[],
+): string {
+  const clauseSummary =
+    Array.isArray(clauses) && clauses.length > 0
+      ? clauses
+          .map((c: unknown) => {
+            const cl = c as Record<string, unknown>;
+            const citation = cl.citation as Record<string, string> | null;
+            return `[${String(cl.status ?? "").toUpperCase()}] ${cl.title ?? ""}: ${cl.explanation ?? ""}${citation ? ` (${citation.article})` : ""}${cl.action ? ` → Action: ${cl.action}` : ""}`;
+          })
+          .join("\n")
+      : "No contract analysis provided.";
+
+  const hasContract = Array.isArray(clauses) && clauses.length > 0;
+
+  // Escape double-quotes in transcript to prevent prompt injection.
+  const safeTranscript = transcript.replace(/"/g, "'");
+
+  return `You are a labor law advisor helping a worker understand THEIR specific employment contract. You have access to the full clause-by-clause analysis of that contract.
+
+SCOPE RESTRICTION: You ONLY answer questions about this specific analyzed contract and its clauses. If the worker asks about anything unrelated to this contract (e.g. general questions, other topics, other contracts), politely say: "I can only help with questions about your analyzed contract. Please ask me about a specific clause or your rights under this contract."
+
+${domainContext}
+
+## Contract analysis (${jurisdiction === "se" ? "Swedish" : "Dutch"} law)
+${hasContract ? clauseSummary : "No contract has been analyzed yet. Ask the worker to upload and analyze their contract first."}
+
+## Worker's voice question
+"${safeTranscript}"
+
+## Answer instructions
+- Answer in the same language as the question (detect from transcript — Dutch if Dutch words present)
+- ONLY discuss clauses and issues from the analysis above — do not invent new clauses
+- Reference the exact clause title and its status (ILLEGAL/EXPLOITATIVE/COMPLIANT) from the list
+- Cite the relevant legal article (e.g. BW 7:652) when explaining violations
+- Max 4 sentences — response will be read aloud via text-to-speech
+- End with one concrete action the worker can take right now`;
 }
 
 function jsonError(status: number, message: string): Response {
@@ -29,17 +131,15 @@ function jsonError(status: number, message: string): Response {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
-  if (!rateLimit(req, "transcribe", { capacity: 30, refillPerSec: 30 / 60 })) {
-    return jsonError(429, "Too many requests. Slow down.");
-  }
-
-  if (process.env.NEXT_PUBLIC_VOICE_ENABLED !== "true") {
-    return jsonError(503, "Voice features are not enabled");
+  if (!rateLimit(req, "transcribe", { capacity: 20, refillPerSec: 20 / 60 })) {
+    return jsonError(429, "Too many requests.");
   }
 
   const apiKey = process.env.RESON8_API_KEY;
-  if (!apiKey) {
-    return jsonError(503, "Transcription service not configured");
+  if (!apiKey) return jsonError(503, "Transcription service not configured");
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return jsonError(503, "Analysis service not configured");
   }
 
   let form: FormData;
@@ -50,80 +150,127 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   const audio = form.get("audio");
-  if (!(audio instanceof File)) {
-    return jsonError(400, "Missing 'audio' field");
-  }
-  if (audio.size > MAX_AUDIO_BYTES) {
-    return jsonError(413, "Audio file too large (max 10 MB)");
-  }
-  if (!audio.type.startsWith("audio/") && audio.type !== "video/webm") {
-    return jsonError(400, "Unsupported audio format");
-  }
+  if (!(audio instanceof File)) return jsonError(400, "Missing 'audio' field");
 
-  // Parse context — soft-fail to safe defaults so a missing/malformed context
-  // never blocks transcription. The model still gets a usable language hint.
-  let ctx: TranscribeContext = {
-    jurisdiction: "nl",
-    permitType: "",
-    detectedLanguage: "en",
-    vocabulary: [],
-    prompt: "",
-  };
+  // Bug fix: reject 0-byte files before they reach Reson8 and return a cryptic 400.
+  if (audio.size === 0) return jsonError(400, "Audio file is empty");
+  if (audio.size > 10 * 1024 * 1024) return jsonError(413, "Audio too large (max 10 MB)");
+
+  // Optional context: jurisdiction + contract clauses from prior analysis
+  let jurisdiction = "nl";
+  let clauses: unknown[] = [];
   const rawCtx = form.get("context");
   if (typeof rawCtx === "string") {
     try {
-      const parsed = transcribeContextSchema.safeParse(JSON.parse(rawCtx));
-      if (parsed.success) ctx = parsed.data;
+      const ctx = JSON.parse(rawCtx) as Record<string, unknown>;
+      if (ctx.jurisdiction === "se" || ctx.jurisdiction === "nl") {
+        jurisdiction = ctx.jurisdiction;
+      }
+      if (Array.isArray(ctx.clauses)) clauses = ctx.clauses;
     } catch {
-      // Use defaults — not a fatal error.
+      // Use defaults — not fatal.
     }
   }
 
-  // Build Reson8 request
-  const reson8Form = new FormData();
-  reson8Form.set("audio", audio);
-  reson8Form.set("model", process.env.RESON8_MODEL_ID ?? DEFAULT_MODEL);
-  reson8Form.set("language", ctx.detectedLanguage);
-  if (ctx.vocabulary.length > 0) {
-    reson8Form.set("vocabulary", JSON.stringify(ctx.vocabulary));
-  }
-  if (ctx.prompt) {
-    reson8Form.set("prompt", ctx.prompt);
-  }
+  // Bug fix: validate customModelId as a UUID before appending to URL.
+  // An unvalidated string from form data could inject additional query params.
+  const rawModelId = form.get("customModelId");
+  const customModelId =
+    typeof rawModelId === "string" && UUID_RE.test(rawModelId.trim()) ? rawModelId.trim() : null;
 
-  const started = performance.now();
+  // --- Step 1: Reson8 STT ---
+  const audioBuffer = await audio.arrayBuffer();
+  const t0 = Date.now();
+
+  const sttUrl = new URL(`${RESON8_URL}?include_words=true`);
+  if (customModelId) {
+    sttUrl.searchParams.set("custom_model_id", customModelId);
+  }
 
   let reson8Res: Response;
   try {
-    reson8Res = await fetch(`${RESON8_BASE_URL}/transcribe`, {
+    // Bug fix: AbortSignal.timeout prevents the route from hanging if Reson8 is slow.
+    reson8Res = await fetch(sttUrl.toString(), {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}` },
-      body: reson8Form,
+      headers: {
+        Authorization: `ApiKey ${apiKey}`,
+        "Content-Type": "application/octet-stream",
+      },
+      body: audioBuffer,
+      signal: AbortSignal.timeout(STT_TIMEOUT_MS),
     });
-  } catch {
-    return jsonError(502, "Transcription service unreachable");
+  } catch (err) {
+    const isTimeout = err instanceof Error && err.name === "TimeoutError";
+    return jsonError(
+      502,
+      isTimeout ? "Transcription service timed out" : "Transcription service unreachable",
+    );
   }
 
   if (!reson8Res.ok) {
+    const errText = await reson8Res.text().catch(() => "");
+    console.error("Reson8 STT error:", reson8Res.status, errText);
     const msg =
       reson8Res.status === 401
         ? "Invalid transcription API key"
-        : `Transcription service returned ${reson8Res.status}`;
+        : `Transcription service error ${reson8Res.status}`;
     return jsonError(502, msg);
   }
 
-  let raw: unknown;
+  let reson8Json: unknown;
   try {
-    raw = await reson8Res.json();
+    reson8Json = await reson8Res.json();
   } catch {
     return jsonError(502, "Transcription service returned invalid JSON");
   }
 
-  const transcript = extractTranscript(raw);
-  const durationMs = Math.round(performance.now() - started);
+  const r = reson8Json as Record<string, unknown>;
+  const transcript: string =
+    typeof r.text === "string" ? r.text : typeof r.transcript === "string" ? r.transcript : "";
+  const sttMs = Date.now() - t0;
 
-  return new Response(JSON.stringify({ transcript, durationMs }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  if (!transcript.trim()) {
+    return jsonError(422, "No speech detected in audio. Please speak clearly and try again.");
+  }
+
+  // --- Step 2: Load domain vocab + build reasoning prompt ---
+  const vocab = await loadDomainVocab();
+  const domainContext = buildDomainContext(vocab, jurisdiction);
+  const reasoningPrompt = buildReasoningPrompt(transcript, jurisdiction, domainContext, clauses);
+
+  // --- Step 3: Claude reasoning ---
+  const client = new Anthropic();
+  const t1 = Date.now();
+
+  let reasoningText = "";
+  try {
+    const msg = await client.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 512,
+      messages: [{ role: "user", content: reasoningPrompt }],
+    });
+    reasoningText = msg.content
+      .filter((b) => b.type === "text")
+      .map((b) => (b as { type: "text"; text: string }).text)
+      .join("");
+  } catch (err) {
+    console.error("Claude reasoning error:", err);
+    reasoningText = "Unable to generate a response at this time. Please try again.";
+  }
+
+  const reasoningMs = Date.now() - t1;
+
+  return new Response(
+    JSON.stringify({
+      transcript,
+      reasoning: reasoningText,
+      sttMs,
+      reasoningMs,
+      totalMs: sttMs + reasoningMs,
+    }),
+    {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    },
+  );
 }

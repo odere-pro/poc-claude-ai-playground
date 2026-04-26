@@ -21,6 +21,7 @@ import type {
 export type Phase = "upload" | "analyzing" | "results" | "incomplete";
 
 export type VoiceState = "idle" | "listening" | "processing" | "speaking";
+export type ModelState = "none" | "building" | "ready" | "failed";
 
 export interface AppState {
   readonly report: {
@@ -36,6 +37,8 @@ export interface AppState {
   readonly voiceState: VoiceState;
   readonly lastSpokenText: string;
   readonly savedSummary: SavedSummary | null;
+  readonly modelState: ModelState;
+  readonly customModelId: string | null;
 }
 
 const DEFAULT_PERMIT_BY_JURISDICTION: Record<Jurisdiction, string> = {
@@ -54,6 +57,8 @@ export const initialState: AppState = {
   voiceState: "idle",
   lastSpokenText: "",
   savedSummary: null,
+  modelState: "none",
+  customModelId: null,
 };
 
 export type Action =
@@ -70,6 +75,8 @@ export type Action =
   | { type: "TOGGLE_EXPANDER"; id: string }
   | { type: "LOAD_SAVED_SUMMARY"; saved: SavedSummary }
   | { type: "CLEAR_SAVED_SUMMARY" }
+  | { type: "SET_MODEL_STATE"; modelState: ModelState }
+  | { type: "SET_CUSTOM_MODEL_ID"; id: string }
   | { type: "RESET" };
 
 function mergeClauses(
@@ -108,6 +115,8 @@ export function reducer(state: AppState, action: Action): AppState {
         report: { clauses: [], summary: null },
         highlightedClauseId: null,
         expandedClauses: new Set(),
+        modelState: "none",
+        customModelId: null,
       };
 
     case "RECEIVE_CLAUSES_BATCH":
@@ -173,6 +182,12 @@ export function reducer(state: AppState, action: Action): AppState {
 
     case "CLEAR_SAVED_SUMMARY":
       return { ...state, savedSummary: null };
+
+    case "SET_MODEL_STATE":
+      return { ...state, modelState: action.modelState };
+
+    case "SET_CUSTOM_MODEL_ID":
+      return { ...state, customModelId: action.id, modelState: "ready" };
 
     case "RESET":
       return {

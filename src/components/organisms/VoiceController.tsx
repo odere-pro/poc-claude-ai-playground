@@ -5,18 +5,21 @@ import { useReport } from "@/context/ReportContext";
 import { useVoice } from "@/hooks/useVoice";
 
 export function VoiceController() {
-  // Always call hooks before any conditional return — rules-of-hooks.
-  const { state } = useReport();
+  const { state, dispatch } = useReport();
   const { startListening, stopAndProcess, cancel } = useVoice();
 
   if (process.env.NEXT_PUBLIC_VOICE_ENABLED !== "true") return null;
 
-  const { voiceState } = state;
+  const { voiceState, modelState, lastSpokenText } = state;
   const isListening = voiceState === "listening";
   const isProcessing = voiceState === "processing";
   const isSpeaking = voiceState === "speaking";
 
   const handleClick = () => {
+    if (isSpeaking) {
+      dispatch({ type: "SET_VOICE_STATE", voiceState: "idle" });
+      return;
+    }
     if (voiceState === "idle") void startListening();
     else if (isListening) void stopAndProcess();
     else cancel();
@@ -27,11 +30,31 @@ export function VoiceController() {
     : isProcessing
       ? "Processing…"
       : isSpeaking
-        ? "Speaking…"
-        : "🎙 Speak";
+        ? "Dismiss"
+        : "🎙 Ask";
+
+  const modelBadge =
+    modelState === "building"
+      ? "⏳ preparing model…"
+      : modelState === "ready"
+        ? "✓ model ready"
+        : null;
 
   return (
-    <div data-testid="voice-controller" className="fixed right-6 bottom-6 z-20">
+    <div
+      data-testid="voice-controller"
+      className="fixed right-6 bottom-6 z-20 flex max-w-sm flex-col items-end gap-2"
+    >
+      {isSpeaking && lastSpokenText && (
+        <div className="rounded-lg border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800 shadow-lg">
+          {lastSpokenText}
+        </div>
+      )}
+      {modelBadge && !isSpeaking && (
+        <span className="rounded-full border border-gray-200 bg-white/80 px-2 py-0.5 text-xs text-gray-500">
+          {modelBadge}
+        </span>
+      )}
       <Button
         size="lg"
         variant={isListening ? "destructive" : "default"}
@@ -41,10 +64,10 @@ export function VoiceController() {
           isListening
             ? "Stop recording and transcribe"
             : isSpeaking
-              ? "Cancel speech"
+              ? "Dismiss answer"
               : isProcessing
                 ? "Processing voice input"
-                : "Start voice navigation"
+                : "Ask a question about your contract"
         }
       >
         {label}

@@ -2,43 +2,6 @@
 
 import { useRef, useCallback } from "react";
 import { useReport } from "@/context/ReportContext";
-import type { AppState } from "@/context/ReportContext";
-import type { TranscribeContext } from "@/lib/schemas";
-import type { VoiceCommandResponse } from "@/lib/types";
-
-/**
- * Build domain-knowledge context for the Reson8 transcription request.
- *
- * Extracts clause titles and citation identifiers from the active analysis so
- * the STT model can weight legal vocabulary (e.g. "niet-concurrentiebeding",
- * "BW 7:653") higher than phonetically similar common words.
- */
-function buildTranscribeContext(state: AppState): TranscribeContext {
-  const clauses = state.report?.clauses ?? [];
-
-  const rawVocab: string[] = [];
-  for (const clause of clauses) {
-    if (clause.title) rawVocab.push(clause.title);
-    if (clause.citation?.article) rawVocab.push(clause.citation.article);
-    if (clause.citation?.label) rawVocab.push(clause.citation.label);
-  }
-
-  const vocabulary = [...new Set(rawVocab)].slice(0, 200);
-
-  const prompt = [
-    `Employment contract analysis`,
-    `jurisdiction: ${state.jurisdiction.toUpperCase()}`,
-    `permit: ${state.permitType}`,
-  ].join(", ");
-
-  return {
-    jurisdiction: state.jurisdiction,
-    permitType: state.permitType,
-    detectedLanguage: state.detectedLanguage,
-    vocabulary,
-    prompt,
-  };
-}
 
 export interface UseVoiceReturn {
   startListening: () => Promise<void>;
@@ -52,7 +15,6 @@ export function useVoice(): UseVoiceReturn {
   const chunksRef = useRef<Blob[]>([]);
 
   const startListening = useCallback(async () => {
-    dispatch({ type: "SET_VOICE_STATE", voiceState: "listening" });
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
@@ -63,8 +25,10 @@ export function useVoice(): UseVoiceReturn {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
       recorder.start();
+      // Set recording state only after getUserMedia resolves so the button
+      // never flashes "recording" when mic permission is denied.
+      dispatch({ type: "SET_VOICE_STATE", voiceState: "listening" });
     } catch {
-      // Mic permission denied or device unavailable — go back to idle.
       dispatch({ type: "SET_VOICE_STATE", voiceState: "idle" });
     }
   }, [dispatch]);
@@ -73,7 +37,6 @@ export function useVoice(): UseVoiceReturn {
     const recorder = recorderRef.current;
     if (!recorder) return;
 
-    // Wait for the recorder to fully stop before reading chunks.
     await new Promise<void>((resolve) => {
       recorder.onstop = () => resolve();
       recorder.stop();
@@ -81,54 +44,50 @@ export function useVoice(): UseVoiceReturn {
     });
     recorderRef.current = null;
 
+    if (chunksRef.current.length === 0) {
+      dispatch({ type: "SET_VOICE_STATE", voiceState: "idle" });
+      return;
+    }
+
     dispatch({ type: "SET_VOICE_STATE", voiceState: "processing" });
 
     const mimeType = recorder.mimeType || "audio/webm";
     const blob = new Blob(chunksRef.current, { type: mimeType });
     chunksRef.current = [];
 
-    const ctx = buildTranscribeContext(state);
     const form = new FormData();
     form.set("audio", blob, "recording.webm");
-    form.set("context", JSON.stringify(ctx));
+
+    // Pass the full clause analysis as context so the server-side Claude prompt
+    // is grounded in this specific contract.
+    form.set(
+      "context",
+      JSON.stringify({
+        jurisdiction: state.jurisdiction,
+        clauses: state.report?.clauses ?? [],
+      }),
+    );
+
+    // Include the per-contract Reson8 custom model ID when ready — biases STT
+    // toward this contract's specific legal vocabulary.
+    if (state.customModelId) {
+      form.set("customModelId", state.customModelId);
+    }
 
     try {
       const tRes = await fetch("/api/transcribe", { method: "POST", body: form });
       if (!tRes.ok) throw new Error("transcribe_failed");
-      const { transcript } = (await tRes.json()) as { transcript: string };
-
-      const reportContext = {
-        currentClauseId: state.highlightedClauseId,
-        clauseIds: (state.report?.clauses ?? []).map((c) => c.id),
-        jurisdiction: state.jurisdiction,
+      const { reasoning, transcript } = (await tRes.json()) as {
+        transcript: string;
+        reasoning?: string;
       };
 
-      const vcRes = await fetch("/api/voice-command", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript, reportContext }),
-      });
-      if (!vcRes.ok) throw new Error("voice_command_failed");
-
-      const { responseText } = (await vcRes.json()) as VoiceCommandResponse;
-
       dispatch({ type: "SET_VOICE_STATE", voiceState: "speaking" });
-      dispatch({ type: "SET_LAST_SPOKEN", text: responseText });
-
-      // Use Web Speech API for TTS. A future Reson8 TTS call replaces this
-      // block by swapping in a fetch + audio playback before the idle dispatch.
-      if (responseText && typeof window !== "undefined" && "speechSynthesis" in window) {
-        const utterance = new SpeechSynthesisUtterance(responseText);
-        utterance.onend = () => dispatch({ type: "SET_VOICE_STATE", voiceState: "idle" });
-        utterance.onerror = () => dispatch({ type: "SET_VOICE_STATE", voiceState: "idle" });
-        window.speechSynthesis.speak(utterance);
-      } else {
-        dispatch({ type: "SET_VOICE_STATE", voiceState: "idle" });
-      }
+      dispatch({ type: "SET_LAST_SPOKEN", text: reasoning ?? transcript });
     } catch {
       dispatch({ type: "SET_VOICE_STATE", voiceState: "idle" });
     }
-  }, [dispatch, state]);
+  }, [dispatch, state.customModelId, state.jurisdiction, state.report]);
 
   const cancel = useCallback(() => {
     const recorder = recorderRef.current;
@@ -140,9 +99,6 @@ export function useVoice(): UseVoiceReturn {
         // Already stopped — ignore.
       }
       recorderRef.current = null;
-    }
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
     }
     dispatch({ type: "SET_VOICE_STATE", voiceState: "idle" });
   }, [dispatch]);
