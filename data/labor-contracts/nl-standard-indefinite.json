@@ -1,0 +1,132 @@
+{
+  "id": "nl-standard-indefinite",
+  "title": "Standard Dutch Employment Contract (Indefinite / Vast Contract)",
+  "language": "nl",
+  "contract_type": "onbepaalde_tijd",
+  "jurisdiction": "Netherlands",
+  "collective_agreement": "CAO Algemeen",
+  "clauses": [
+    {
+      "id": "parties",
+      "heading": "Artikel 1 – Partijen",
+      "text": "Deze arbeidsovereenkomst wordt gesloten tussen: Werkgever: TechBedrijf B.V., gevestigd te Amsterdam, KvK-nummer 12345678, hierna te noemen 'werkgever'; en Werknemer: [Naam], geboren op [Geboortedatum], wonende te [Adres], hierna te noemen 'werknemer'.",
+      "plain_english": "Names the employer (company) and employee (you). The KvK number is the Dutch Chamber of Commerce registration — it proves the company is legally registered.",
+      "risk_level": "low",
+      "tags": ["identity", "parties"]
+    },
+    {
+      "id": "start_date",
+      "heading": "Artikel 2 – Aanvang en duur",
+      "text": "De arbeidsovereenkomst vangt aan op [Startdatum] en wordt aangegaan voor onbepaalde tijd. Er geldt een proeftijd van twee (2) maanden.",
+      "plain_english": "You start on [date] and the contract has no end date (permanent). IMPORTANT: The 2-month probation period means either party can terminate immediately with no notice and no severance. You have very few rights during this period.",
+      "risk_level": "high",
+      "risk_explanation": "During probation (proeftijd) you can be fired instantly, without reason, and without pay. Avoid major financial commitments (rental deposits, large purchases) until probation ends.",
+      "tags": ["probation", "termination", "start_date"]
+    },
+    {
+      "id": "job_title",
+      "heading": "Artikel 3 – Functie en werkzaamheden",
+      "text": "De werknemer wordt aangesteld in de functie van Software Developer. De werknemer verricht alle werkzaamheden die redelijkerwijs van hem/haar verwacht kunnen worden in het kader van de uitoefening van de functie, evenals andere werkzaamheden die de werkgever hem/haar opdraagt.",
+      "plain_english": "Your job title is Software Developer. The phrase 'other tasks the employer assigns' is standard Dutch contract language — it does NOT mean unlimited scope. Under Dutch law (redelijkerwijs) you can only be asked to do tasks reasonably related to your role.",
+      "risk_level": "medium",
+      "risk_explanation": "If asked to do tasks very far outside your role, you can politely decline or ask for a revised job description. Refusing clearly unreasonable tasks is protected by Dutch law.",
+      "tags": ["job_description", "duties"]
+    },
+    {
+      "id": "salary",
+      "heading": "Artikel 4 – Salaris",
+      "text": "De werknemer ontvangt een bruto maandsalaris van € [Bedrag], exclusief vakantiegeld. Het salaris wordt maandelijks achteraf uitbetaald, uiterlijk op de laatste werkdag van de maand.",
+      "plain_english": "Your salary is stated GROSS (bruto) — your actual take-home (netto) will be lower after income tax and social contributions. Use the Dutch tax calculator (belastingdienst.nl) to estimate your net pay before signing.",
+      "risk_level": "high",
+      "risk_explanation": "Many non-EU workers are surprised by how much tax is withheld. The 30% ruling (30%-regeling) may reduce tax for highly skilled migrants — ask HR if you qualify.",
+      "tags": ["salary", "gross_net", "tax"]
+    },
+    {
+      "id": "holiday_pay",
+      "heading": "Artikel 5 – Vakantiegeld",
+      "text": "De werknemer heeft recht op vakantiegeld ter hoogte van 8% van het bruto jaarsalaris. Het vakantiegeld wordt jaarlijks uitbetaald in de maand mei.",
+      "plain_english": "You receive an extra 8% of your annual salary as holiday pay (vakantiegeld), paid out every May. This is mandatory under Dutch law — every employee gets it. Factor this into your annual income calculation.",
+      "risk_level": "low",
+      "tags": ["vacation_pay", "benefits", "mandatory"]
+    },
+    {
+      "id": "working_hours",
+      "heading": "Artikel 6 – Arbeidsduur en werktijden",
+      "text": "De werknemer werkt 40 uur per week. De werkgever kan, in overleg met de werknemer, de werktijden aanpassen.",
+      "plain_english": "Standard full-time is 40 hours/week. 'In overleg' (in consultation) means your employer should discuss schedule changes with you first, not impose them unilaterally.",
+      "risk_level": "low",
+      "tags": ["working_hours", "schedule"]
+    },
+    {
+      "id": "overtime",
+      "heading": "Artikel 7 – Overwerk",
+      "text": "Overwerk wordt slechts verricht na voorafgaande opdracht van de werkgever. Eventuele vergoeding van overwerk is geregeld conform de toepasselijke CAO.",
+      "plain_english": "Overtime must be explicitly requested by your employer. Compensation depends on the applicable CAO (collective labor agreement). If no CAO applies, overtime pay terms should be specified — if they're not, ask for clarification before signing.",
+      "risk_level": "medium",
+      "tags": ["overtime", "compensation"]
+    },
+    {
+      "id": "vacation_days",
+      "heading": "Artikel 8 – Vakantie",
+      "text": "De werknemer heeft recht op 25 vakantiedagen per kalenderjaar op basis van een volledig dienstverband. Vakantie wordt opgenomen in overleg met de werkgever.",
+      "plain_english": "You get 25 paid vacation days per year (minimum by law is 20). Days must be agreed with your employer but they cannot unreasonably deny vacation. Unused days can roll over but expire after 6 months (statutory days) or 5 years (extra days).",
+      "risk_level": "low",
+      "tags": ["vacation", "leave", "mandatory"]
+    },
+    {
+      "id": "sick_leave",
+      "heading": "Artikel 9 – Ziekte",
+      "text": "Bij ziekte is de werkgever verplicht het loon door te betalen gedurende maximaal 104 weken conform de Wet Loondoorbetaling bij Ziekte (WvLZ). Gedurende de eerste 52 weken ontvangt de werknemer 100% van het loon, gedurende de tweede 52 weken 70% van het loon.",
+      "plain_english": "If you're sick, Dutch law guarantees 2 years of continued pay: 100% for the first year, 70% for the second year. This is one of the strongest worker protections in the Netherlands — significantly better than most countries.",
+      "risk_level": "low",
+      "tags": ["sick_leave", "mandatory", "wvlz"]
+    },
+    {
+      "id": "notice_period",
+      "heading": "Artikel 10 – Opzegtermijn",
+      "text": "Na de proeftijd geldt voor de werknemer een opzegtermijn van één (1) maand. Voor de werkgever geldt een opzegtermijn afhankelijk van de duur van het dienstverband: 0–5 jaar: 1 maand; 5–10 jaar: 2 maanden; 10–15 jaar: 3 maanden; 15+ jaar: 4 maanden.",
+      "plain_english": "After probation: you must give 1 month notice to quit. Your employer must give 1–4 months notice to fire you (depending on how long you've worked there). Wrongful termination without notice entitles you to compensation.",
+      "risk_level": "medium",
+      "tags": ["notice_period", "termination"]
+    },
+    {
+      "id": "non_compete",
+      "heading": "Artikel 11 – Concurrentiebeding",
+      "text": "Het is de werknemer verboden om gedurende de looptijd van de overeenkomst en gedurende een periode van twaalf (12) maanden na beëindiging van het dienstverband, zonder schriftelijke toestemming van de werkgever, in dienst te treden bij een concurrent of een eigen onderneming te starten in dezelfde branche binnen een straal van 50 km.",
+      "plain_english": "Non-compete clause: for 12 months after leaving, you cannot work for a competitor or start a competing business within 50 km. WARNING: This can seriously limit your next job options. Dutch courts can nullify overly broad non-competes, but you may need a lawyer.",
+      "risk_level": "high",
+      "risk_explanation": "Non-compete clauses (concurrentiebeding) are only valid in indefinite contracts with written justification. If this seems too restrictive, negotiate before signing — ask to narrow the geography, industry scope, or duration. Courts often reduce excessive clauses.",
+      "tags": ["non_compete", "post_employment", "negotiate"]
+    },
+    {
+      "id": "confidentiality",
+      "heading": "Artikel 12 – Geheimhouding",
+      "text": "De werknemer is verplicht tot geheimhouding van alle vertrouwelijke informatie die hij/zij in het kader van zijn/haar functie verkrijgt, zowel tijdens als na afloop van het dienstverband.",
+      "plain_english": "You must keep company information confidential during and after employment. This is standard and enforceable. Be careful about discussing work details on social media or with friends.",
+      "risk_level": "low",
+      "tags": ["confidentiality", "nda"]
+    },
+    {
+      "id": "intellectual_property",
+      "heading": "Artikel 13 – Intellectueel eigendom",
+      "text": "Alle werken, uitvindingen en intellectuele eigendomsrechten die de werknemer in het kader van zijn/haar dienstverband creëert, komen toe aan de werkgever.",
+      "plain_english": "Anything you create for work belongs to the company — code, designs, documents, inventions. This is standard. If you do freelance work or personal projects in the same field, make sure to keep them clearly separate from your employment.",
+      "risk_level": "medium",
+      "tags": ["ip", "intellectual_property"]
+    },
+    {
+      "id": "governing_law",
+      "heading": "Artikel 14 – Toepasselijk recht",
+      "text": "Op deze arbeidsovereenkomst is Nederlands recht van toepassing. Geschillen worden voorgelegd aan de bevoegde rechter in Amsterdam.",
+      "plain_english": "Dutch law governs this contract. Disputes go to Amsterdam courts. This is standard and actually protects you — Dutch labor law is very employee-friendly.",
+      "risk_level": "low",
+      "tags": ["governing_law", "jurisdiction"]
+    }
+  ],
+  "key_facts": {
+    "minimum_wage_check": "Verify salary is above the Dutch minimum wage (minimumloon) for your age group — updated every 6 months.",
+    "bsn_required": "You need a BSN (citizen service number) to be legally employed. Your employer must register you with the Belastingdienst.",
+    "work_permit": "Non-EU/EEA workers need a work permit (TWV) or combined permit (GVVA). Verify your employer has applied before your start date.",
+    "30_percent_ruling": "If you're a highly skilled migrant, ask about the 30%-ruling (30%-regeling) which can significantly reduce income tax for up to 5 years."
+  }
+}

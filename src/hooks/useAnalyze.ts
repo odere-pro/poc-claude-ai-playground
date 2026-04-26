@@ -5,6 +5,8 @@ import { useReport } from "@/context/ReportContext";
 import { consumeAnalyzeStream } from "@/lib/streamClient";
 import type { AnalyzeRequest } from "@/lib/types";
 
+const FREE_TRIAL_STORAGE_KEY = "clauseguard.freeTrialUsed";
+
 interface AnalyzeOptions {
   readonly onPaymentRequired?: () => void;
 }
@@ -18,6 +20,16 @@ export function useAnalyze(options: AnalyzeOptions = {}) {
 
   const start = useCallback(
     async (contractText: string) => {
+      // Client-side free trial gate — avoids a round-trip when the trial is
+      // already exhausted. The server still enforces via checkEntitlement.
+      if (
+        typeof window !== "undefined" &&
+        window.localStorage.getItem(FREE_TRIAL_STORAGE_KEY) === "true"
+      ) {
+        options.onPaymentRequired?.();
+        return;
+      }
+
       dispatch({ type: "START_ANALYSIS" });
       const request: AnalyzeRequest = {
         contractText,
@@ -27,7 +39,13 @@ export function useAnalyze(options: AnalyzeOptions = {}) {
       };
       await consumeAnalyzeStream(request, {
         onBatch: (clauses) => dispatch({ type: "RECEIVE_CLAUSES_BATCH", clauses }),
-        onSummary: (summary) => dispatch({ type: "FINALIZE_REPORT", summary }),
+        onSummary: (summary) => {
+          dispatch({ type: "FINALIZE_REPORT", summary });
+          // Mark the free trial as consumed once analysis completes successfully.
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem(FREE_TRIAL_STORAGE_KEY, "true");
+          }
+        },
         onError: (err) => {
           if (err.message === "payment_required") {
             options.onPaymentRequired?.();

@@ -1,0 +1,31 @@
+{
+  "id": "nl-remote",
+  "title": "Remote work employment",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-trial-period",
+    "nl-non-compete",
+    "nl-notice-period",
+    "nl-working-hours",
+    "nl-instant-dismissal",
+    "nl-minimum-wage",
+    "nl-overtime-waiver",
+    "nl-leave-waiver",
+    "nl-unilateral-relocation",
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "parties",                "description": "Full names and addresses of both employer and employee" },
+    { "id": "start-date",             "description": "Employment start date" },
+    { "id": "job-description",        "description": "Job title and responsibilities" },
+    { "id": "remote-location",        "description": "Approved remote work location(s) including home address" },
+    { "id": "office-days",            "description": "Expected number of in-office days per week or month (if hybrid)" },
+    { "id": "gross-salary",           "description": "Gross salary and payment frequency" },
+    { "id": "working-hours",          "description": "Agreed weekly working hours and reachability expectations" },
+    { "id": "notice-period",          "description": "Notice period for both employer and employee" },
+    { "id": "equipment",              "description": "Which party provides and pays for equipment (laptop, internet, ergonomic setup)" },
+    { "id": "home-office-allowance",  "description": "Home office cost reimbursement or tax-free allowance (thuiswerkkostenvergoeding)" },
+    { "id": "holiday-allowance",      "description": "Vakantiegeld of at least 8% of gross salary" }
+  ],
+  "red_flag_ids": ["unpaid_overtime", "study_cost_clawback"]
+}

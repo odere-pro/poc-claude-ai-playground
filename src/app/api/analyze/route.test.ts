@@ -40,8 +40,8 @@ describe("POST /api/analyze", () => {
     expect(res.status).toBe(400);
   });
 
-  it("returns 413 for contract text > 100KB", async () => {
-    const tooBig = "x".repeat(100 * 1024 + 1);
+  it("returns 413 for contract text > 500KB", async () => {
+    const tooBig = "x".repeat(500 * 1024 + 1);
     const res = await POST(makeRequest({ ...validBody, contractText: tooBig }) as never);
     expect(res.status).toBe(413);
   });

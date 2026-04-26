@@ -1,0 +1,56 @@
+{
+  "id": "nl-fixed-term",
+  "title": "Dutch Fixed-Term Contract (Tijdelijk / Bepaalde Tijd)",
+  "language": "nl",
+  "contract_type": "bepaalde_tijd",
+  "jurisdiction": "Netherlands",
+  "clauses": [
+    {
+      "id": "duration",
+      "heading": "Artikel 2 – Aanvang en duur",
+      "text": "De arbeidsovereenkomst vangt aan op [Startdatum] en eindigt van rechtswege op [Einddatum], zonder dat opzegging vereist is.",
+      "plain_english": "This is a temporary contract with a fixed end date. It ends automatically — no resignation or firing needed. The contract just stops on the end date.",
+      "risk_level": "high",
+      "risk_explanation": "After 3 consecutive fixed-term contracts OR after 3 years, Dutch law (ketenregeling) requires the employer to offer you a permanent contract. Track your contract chain carefully.",
+      "tags": ["fixed_term", "end_date", "ketenregeling"]
+    },
+    {
+      "id": "chain_rule",
+      "heading": "Ketenregeling (Chain Rule) — Wettelijke Informatie",
+      "text": "Op grond van artikel 7:668a BW mag een werkgever maximaal 3 opeenvolgende arbeidsovereenkomsten voor bepaalde tijd sluiten, met een maximale totale duur van 3 jaar. Daarna ontstaat van rechtswege een arbeidsovereenkomst voor onbepaalde tijd.",
+      "plain_english": "KEY PROTECTION: After 3 fixed-term contracts in a row OR 3 total years of employment, your next contract MUST be permanent by law. Employers cannot break this chain by inserting a 6-month gap (though a gap of more than 6 months resets the chain).",
+      "risk_level": "high",
+      "risk_explanation": "Some employers deliberately let contracts lapse for 6+ months to reset the chain and avoid giving you a permanent contract. Recognize this tactic and plan accordingly.",
+      "tags": ["chain_rule", "ketenregeling", "permanent_contract"]
+    },
+    {
+      "id": "aanzegplicht",
+      "heading": "Artikel – Aanzegging",
+      "text": "De werkgever zegt uiterlijk één maand voor het einde van de arbeidsovereenkomst schriftelijk aan of de overeenkomst wordt voortgezet en, zo ja, onder welke voorwaarden.",
+      "plain_english": "Your employer must tell you in writing at least 1 month before the end date whether they want to renew or not. If they fail to do this, they owe you 1 month's salary as compensation (aanzegvergoeding) — even if they don't renew.",
+      "risk_level": "medium",
+      "tags": ["renewal", "aanzegplicht", "notice"]
+    },
+    {
+      "id": "transitievergoeding",
+      "heading": "Transitievergoeding",
+      "text": "Bij beëindiging van de arbeidsovereenkomst op initiatief van de werkgever na een dienstverband van minimaal twee jaar heeft de werknemer recht op een transitievergoeding.",
+      "plain_english": "After 2+ years of employment (including chained fixed-term contracts), if the employer ends your contract you're entitled to a transition payment (transitievergoeding). This is roughly 1/3 of a monthly salary per year worked.",
+      "risk_level": "medium",
+      "tags": ["severance", "transitievergoeding", "termination"]
+    },
+    {
+      "id": "no_probation_short",
+      "heading": "Proeftijd",
+      "text": "Bij een arbeidsovereenkomst voor bepaalde tijd van zes maanden of korter is een proeftijd niet toegestaan.",
+      "plain_english": "No probation period is allowed on contracts of 6 months or shorter. On contracts of 6–24 months, maximum probation is 1 month. Only contracts of 2+ years can have the full 2-month probation.",
+      "risk_level": "medium",
+      "risk_explanation": "If your short-term contract includes a 2-month probation clause, that clause is legally invalid — but you need to know this to challenge it.",
+      "tags": ["probation", "short_contract"]
+    }
+  ],
+  "key_facts": {
+    "zzp_vs_employment": "Some employers try to classify workers as freelancers (ZZP) to avoid employment costs. If you work set hours, use company equipment, and have one main client, you may legally be an employee — this has been a major Dutch enforcement focus since 2025.",
+    "uwv_benefits": "If your contract ends and isn't renewed, you may be entitled to WW (werkloosheidsuitkering) unemployment benefit from UWV, typically 70% of your last salary for several months."
+  }
+}

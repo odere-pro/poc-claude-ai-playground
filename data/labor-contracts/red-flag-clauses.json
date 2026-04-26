@@ -1,0 +1,135 @@
+{
+  "id": "red-flag-clauses",
+  "title": "Red Flag Contract Clauses — Dutch Labor Law",
+  "description": "Clauses that are illegal, unenforceable, or highly unfavorable. Use this as a checklist when reviewing any Dutch employment contract.",
+  "clauses": [
+    {
+      "id": "illegal_probation_short",
+      "severity": "illegal",
+      "riskLevel": "red",
+      "category": "contract-terms",
+      "heading": "Probation on contracts ≤6 months",
+      "pattern": "proeftijd.*bepaalde tijd.*zes maanden",
+      "example": "Er geldt een proeftijd van 1 maand bij een contract van 6 maanden.",
+      "plain_english": "Probation clauses on contracts of 6 months or shorter are VOID by law (art. 7:652 BW). If you see this, the clause is unenforceable — but report it to your employer or FNV.",
+      "action": "Point out that this clause is invalid under Dutch law. The rest of the contract remains valid."
+    },
+    {
+      "id": "unpaid_overtime",
+      "severity": "high_risk",
+      "riskLevel": "amber",
+      "category": "wages",
+      "heading": "Unlimited unpaid overtime",
+      "pattern": "overwerk.*geen.*vergoeding|overwerk.*inbegrepen.*salaris",
+      "example": "Overwerk wordt geacht te zijn inbegrepen in het salaris en geeft geen recht op extra vergoeding.",
+      "plain_english": "Clauses saying overtime is 'included in salary' with no limit are often unenforceable for excessive hours. Dutch courts have ruled that unlimited all-in clauses violate minimum wage law if overtime brings hourly rate below minimum wage.",
+      "action": "Calculate: (monthly salary / (40hrs × 4.33 weeks)) = your effective hourly rate. If overtime would push this below minimum wage, the clause is invalid."
+    },
+    {
+      "id": "broad_non_compete_temp",
+      "severity": "illegal",
+      "riskLevel": "red",
+      "category": "contract-terms",
+      "heading": "Non-compete in fixed-term contract without justification",
+      "pattern": "concurrentiebeding.*bepaalde tijd",
+      "example": "Het is de werknemer verboden om bij een concurrent in dienst te treden gedurende 1 jaar na beëindiging.",
+      "plain_english": "Non-compete clauses in fixed-term contracts are only valid if the contract states a 'weighty business interest' (zwaarwegend bedrijfsbelang) in writing. Without this justification, the clause is void.",
+      "action": "If the non-compete in your fixed-term contract doesn't explicitly state the business justification, it's unenforceable — but consult a lawyer or FNV before acting on this."
+    },
+    {
+      "id": "study_cost_clawback",
+      "severity": "medium_risk",
+      "riskLevel": "amber",
+      "category": "contract-terms",
+      "heading": "Study cost repayment clause",
+      "pattern": "studiekosten.*terugbetalen|opleidingskosten.*verrekenen",
+      "example": "Indien de werknemer binnen 2 jaar na afronding van de opleiding het dienstverband beëindigt, dient hij/zij de studiekosten terug te betalen.",
+      "plain_english": "Study cost repayment clauses are legal but must have a sliding scale — the longer you stay, the less you repay. A flat 100% repayment regardless of when you leave is unenforceable.",
+      "action": "Check that the repayment scales down over time. Ask for a table showing how much you'd owe at each month."
+    },
+    {
+      "id": "below_minimum_wage",
+      "severity": "illegal",
+      "riskLevel": "red",
+      "category": "wages",
+      "heading": "Salary below minimum wage",
+      "pattern": "salaris.*€[0-9]+",
+      "example": "Bruto maandsalaris: € 1.800",
+      "plain_english": "Dutch minimum wage (minimumloon) for adults 21+ is updated every 6 months. As of 2026 it is approximately €2,070/month gross for full-time. Any contract below this is illegal regardless of what you signed.",
+      "action": "Check current minimum wage at rijksoverheid.nl/minimumloon. If your salary is below this, report to the Nederlandse Arbeidsinspectie."
+    },
+    {
+      "id": "trial_period_twice",
+      "severity": "illegal",
+      "riskLevel": "red",
+      "category": "contract-terms",
+      "heading": "Second probation with same employer",
+      "pattern": "proeftijd.*verlenging|nieuwe proeftijd",
+      "example": "Bij verlenging van het contract geldt opnieuw een proeftijd van 1 maand.",
+      "plain_english": "An employer cannot give you a second probation period for the same type of work. Once you've passed probation, you cannot be placed on probation again in a follow-up contract with the same employer.",
+      "action": "This clause is void. You do not have to accept a second probation period."
+    },
+    {
+      "id": "salary_in_kind",
+      "severity": "high_risk",
+      "riskLevel": "amber",
+      "category": "wages",
+      "heading": "Salary paid (partly) in goods or services",
+      "pattern": "salaris.*natura|loon.*producten|vergoeding.*diensten",
+      "example": "Een deel van het loon wordt uitbetaald in de vorm van producten van de werkgever.",
+      "plain_english": "Payment of wages in goods/services (loon in natura) is severely restricted. At minimum, you must receive the full minimum wage in cash. Anything above that can only be paid in kind with your explicit consent.",
+      "action": "Ensure your cash salary meets minimum wage requirements before agreeing to any in-kind compensation."
+    },
+    {
+      "id": "housing_tied_eviction",
+      "severity": "illegal",
+      "riskLevel": "red",
+      "category": "housing",
+      "heading": "Tied housing with instant eviction on job loss",
+      "pattern": "huisvesting.*beëindiging.*ontruimen|woning.*contract.*24 uur",
+      "example": "Beëindiging van de arbeidsovereenkomst beëindigt automatisch de huisvestingsovereenkomst, waarbij de werknemer verplicht is binnen 24 uur te vertrekken.",
+      "plain_english": "Linking housing eviction directly to job termination with no notice period is a criminal exploitation indicator under Art. 273f Sr. Housing and employment are legally separate relationships.",
+      "action": "This clause is void. Contact Juridisch Loket (0900-8020) or FNV immediately. Do not vacate without proper notice under tenancy law."
+    },
+    {
+      "id": "housing_deduction_no_doc",
+      "severity": "medium_risk",
+      "riskLevel": "amber",
+      "category": "housing",
+      "heading": "Housing deduction without separate written agreement",
+      "pattern": "huisvestingskosten.*ingehouden|woonkosten.*loon",
+      "example": "Er worden huisvestingskosten van €250 per maand op het salaris ingehouden.",
+      "plain_english": "Housing deductions are only permissible with a separate written housing contract specifying the amount, what is included, and independent termination terms. A deduction mentioned only in the employment contract is not properly documented.",
+      "action": "Request a separate written housing agreement. Ensure net pay after all deductions stays above minimum wage."
+    },
+    {
+      "id": "piece_rate_no_floor",
+      "severity": "illegal",
+      "riskLevel": "red",
+      "category": "wages",
+      "heading": "Piece-rate pay without minimum wage floor",
+      "pattern": "stukloon|per stuk.*betaald|akkoordsalaris",
+      "example": "De werknemer ontvangt €0,08 per geplukt bosje bloemen, zonder gegarandeerd minimumloon.",
+      "plain_english": "Piece-rate pay must guarantee at least the statutory minimum wage for every hour worked. A piece-rate structure with no floor guarantee is illegal — the minimum wage applies regardless of output.",
+      "action": "Demand a written minimum wage guarantee clause. Report to the Nederlandse Arbeidsinspectie if the employer refuses."
+    },
+    {
+      "id": "cao_not_named",
+      "severity": "medium_risk",
+      "riskLevel": "amber",
+      "category": "employment-classification",
+      "heading": "CAO reference without naming the specific agreement",
+      "pattern": "toepasselijke cao|geldende cao|van toepassing zijnde collectieve",
+      "example": "De toepasselijke collectieve arbeidsovereenkomst is van toepassing op deze arbeidsovereenkomst.",
+      "plain_english": "Dutch law requires the employer to state which specific CAO applies. A vague reference to 'the applicable CAO' is insufficient — if the correct sector CAO provides better terms than the generic ABU CAO, you may be owed arrears.",
+      "action": "Ask the employer to name the specific CAO. Check whether your sector has its own CAO with better terms than the generic one referenced."
+    }
+  ],
+  "resources": {
+    "minimum_wage": "rijksoverheid.nl/minimumloon",
+    "labor_inspectorate": "nlarbeidsinspectie.nl — report illegal working conditions",
+    "fnv_union": "fnv.nl — largest Dutch union, offers free contract checks for members",
+    "rechtwijzer": "rechtwijzer.nl — free Dutch legal guidance tool",
+    "uva_legal_aid": "Juridisch Loket (0900-8020) — free legal advice for workers"
+  }
+}

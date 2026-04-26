@@ -28,6 +28,20 @@
   --space-clause: clamp(1rem, 0.85rem + 0.6vw, 1.5rem);
   --space-section: clamp(2rem, 1.5rem + 2vw, 4rem);
 
+  /* RAG risk colours — RED (illegal), AMBER (exploitative), GREEN (compliant).
+   * Used by riskMappings[] badges on ClauseCards. */
+  --risk-red:        oklch(0.95 0.04 25);
+  --risk-red-fg:     oklch(0.43 0.20 25);
+  --risk-red-border: oklch(0.80 0.12 25);
+
+  --risk-amber:        oklch(0.96 0.05 75);
+  --risk-amber-fg:     oklch(0.48 0.13 65);
+  --risk-amber-border: oklch(0.82 0.10 70);
+
+  --risk-green:        oklch(0.95 0.05 145);
+  --risk-green-fg:     oklch(0.42 0.14 145);
+  --risk-green-border: oklch(0.78 0.11 145);
+
   /* Motion. */
   --duration-fast: 150ms;
   --duration-normal: 300ms;
@@ -45,4 +59,16 @@
   --color-status-permit_conflict-bg: oklch(0.25 0.05 320);
   --color-status-unchecked: oklch(0.7 0.02 250);
   --color-status-unchecked-bg: oklch(0.25 0.005 250);
+
+  --risk-red:        oklch(0.28 0.08 25);
+  --risk-red-fg:     oklch(0.76 0.18 25);
+  --risk-red-border: oklch(0.45 0.14 25);
+
+  --risk-amber:        oklch(0.28 0.07 75);
+  --risk-amber-fg:     oklch(0.80 0.14 75);
+  --risk-amber-border: oklch(0.45 0.11 70);
+
+  --risk-green:        oklch(0.25 0.06 145);
+  --risk-green-fg:     oklch(0.75 0.15 145);
+  --risk-green-border: oklch(0.42 0.11 145);
 }

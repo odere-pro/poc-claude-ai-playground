@@ -1,0 +1,36 @@
+{
+  "id": "nl-hsm",
+  "title": "Highly Skilled Migrant (kennismigrant)",
+  "jurisdiction": "nl",
+  "applicable_rule_ids": [
+    "nl-trial-period",
+    "nl-non-compete",
+    "nl-notice-period",
+    "nl-working-hours",
+    "nl-minimum-wage",
+    "nl-overtime-waiver",
+    "nl-leave-waiver",
+    "nl-document-withholding",
+    "nl-no-complaint-retaliation",
+    "nl-visa-conditional-work",
+    "nl-contract-substitution",
+    "nl-written-statement"
+  ],
+  "mandatory_clauses": [
+    { "id": "parties",           "description": "Full names and addresses of both employer and employee" },
+    { "id": "start-date",        "description": "Employment start date" },
+    { "id": "job-description",   "description": "Job title and description of the role and responsibilities" },
+    { "id": "place-of-work",     "description": "Primary place of work" },
+    { "id": "gross-salary",      "description": "Gross monthly salary meeting or exceeding the kennismigrant salary threshold (IND-published annually)" },
+    { "id": "working-hours",     "description": "Agreed weekly working hours" },
+    { "id": "notice-period",     "description": "Notice period for both employer and employee" },
+    { "id": "holiday-allowance", "description": "Vakantiegeld of at least 8% of gross salary" },
+    { "id": "ind-sponsorship",   "description": "Reference to IND-recognised sponsor status and applicable permit type (kennismigrant / gecombineerde vergunning)" },
+    { "id": "permit-type",       "description": "Explicit statement of the work authorisation type supporting this employment" }
+  ],
+  "red_flag_ids": [
+    "salary_in_kind",
+    "broad_non_compete_temp",
+    "study_cost_clawback"
+  ]
+}
